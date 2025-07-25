@@ -1,0 +1,639 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - STARBLUE{% endblock %}
+
+{% block extra_css %}
+<style>
+    body, .dashboard-page {
+        background: #f6faff;
+    }
+
+    /* Dashboard Header */
+    .dashboard-header {
+        background: linear-gradient(135deg, #b5e0ff 0%, #6fd1fb 100%);
+        color: #144e75;
+        border-bottom: 1px solid #e6f2fa;
+        box-shadow: 0 2px 8px rgba(44,121,207,0.05);
+    }
+    .dashboard-header h1 {
+        color: #144e75;
+        text-shadow: 0 2px 12px rgba(255,255,255,0.2);
+    }
+
+    /* Stat Cards */
+    .stat-card {
+        background: linear-gradient(138deg, #ffffff 65%, #e3f2fd 100%);
+        border-radius: 1rem;
+        box-shadow: 0 2px 18px rgba(108,188,247,0.09);
+        border: 1px solid #e6f2fa;
+        transition: transform 0.2s cubic-bezier(.42,0,.58,1), box-shadow 0.2s;
+        display: flex;
+        align-items: center;
+        padding: 2rem 1rem;
+        height: 100%;
+        opacity: 0.94;
+    }
+    .stat-card:hover {
+        transform: scale(1.035) translateY(-4px);
+        box-shadow: 0 4px 24px rgba(108,188,247,0.16);
+        opacity: 1;
+    }
+    .stat-icon {
+        width: 62px;
+        height: 62px;
+        min-width: 62px;
+        background: linear-gradient(135deg, #c3eafe 0%, #87ceeb 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1.25rem;
+        box-shadow: 0 2px 8px rgba(87,206,235,0.08);
+        border: 2px solid #e4f4fe;
+    }
+    .stat-icon i {
+        font-size: 2rem;
+        color: #3fbaf3;
+    }
+    .stat-number {
+        font-size: 2.1rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+        color: #144e75;
+    }
+    .stat-label {
+        color: #4d6786;
+        font-size: 1rem;
+        font-weight: 500;
+        opacity: 0.82;
+        margin: 0;
+    }
+
+    /* Card components */
+    .card {
+        border-radius: 1rem;
+        border: 1px solid #e3eaf5;
+        box-shadow: 0 2px 14px rgba(59,128,180,0.06);
+        background: #fff;
+        transition: box-shadow .2s;
+    }
+    .card-header {
+        background: none;
+        border-radius: 1rem 1rem 0 0;
+        border-bottom: 1px solid #f0f7fd;
+        font-weight: 600;
+        letter-spacing: .02em;
+        color: #2174a0;
+        background: linear-gradient(135deg,#ebf8ff 60%, #f3fafd 100%);
+    }
+    .card-body {
+        background: #fbfcfe;
+    }
+
+    /* Recent bookings list */
+    .booking-item {
+        border-bottom: 1px solid #eef3f9;
+        padding: 0.9rem 0;
+        background: rgba(130,190,241,0.04);
+        border-radius: 0.5rem;
+        margin-bottom: 0.25rem;
+        transition: box-shadow 0.13s;
+    }
+    .booking-item:last-child {
+        border-bottom: none;
+    }
+    .booking-item:hover {
+        box-shadow: 0 4px 8px rgba(45,152,219,0.12);
+        background: rgba(130,190,241,0.10);
+    }
+    .transport-icon {
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg,#e5f3fd 60%, #f3fafd 100%);
+        border-radius: 50%;
+        margin: auto;
+    }
+    .transport-icon i {
+        font-size: 1.3rem;
+        color: #3fbaf3;
+    }
+    .booking-route h6 {
+        color: #2174a0;
+        font-weight: 600;
+    }
+    .booking-route small {
+        color: #738ca6;
+        font-size: .83rem;
+    }
+    .booking-date p {
+        margin-bottom: 0.2rem;
+        color: #2675c8;
+    }
+    .booking-date small {
+        color: #8baec9;
+    }
+    .booking-status .badge {
+        font-size: 0.97rem;
+        padding: .5em .85em;
+        border-radius: 8px;
+        font-weight: 600;
+        letter-spacing: .01em;
+        box-shadow: 0 2px 8px rgba(87,206,235,0.07);
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+        background: #f8fcff;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 1px 8px rgba(114,205,246,0.07);
+    }
+
+    /* Quick Actions */
+    .quick-action-card {
+        background: linear-gradient(135deg,#fafdff 80%, #e6f4ff 100%);
+        border: 1px solid #e3eaf5;
+        border-radius: 0.8rem;
+        text-decoration: none;
+        color: #2270b6;
+        box-shadow: 0 2px 6px rgba(87,206,235,0.06);
+        transition: all 0.18s;
+        padding: 1.1rem 0.8rem;
+    }
+    .quick-action-card:hover {
+        transform: scale(1.03) translateY(-5px);
+        box-shadow: 0 8px 24px rgba(108,188,247,0.15);
+        background: linear-gradient(135deg,#fafdff 50%, #c1eafb 100%);
+    }
+    .quick-action-icon {
+        text-align: center;
+        margin-bottom: 0.65rem;
+    }
+    .quick-action-icon i {
+        font-size: 1.6rem;
+        color: #50b1e6;
+    }
+    .quick-action-content h6 {
+        margin-bottom: 0.35rem;
+        font-weight: 700;
+        color: #2675c8;
+    }
+    .quick-action-content p {
+        font-size: 0.93rem;
+    }
+
+    /* Profile Summary / Sidebar */
+    .avatar-circle {
+        width: 64px; height: 64px;
+        background: linear-gradient(135deg, #7ecbfa 0%, #266baf 100%);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center; justify-content: center;
+        font-size: 1.6rem; font-weight: 700;
+        margin: 0 auto 0.3rem auto;
+        box-shadow: 0 2px 8px rgba(87,206,235,0.12);
+        border: 2px solid #d1eafd;
+    }
+    .profile-avatar h6 { color: #104c8c; }
+    .profile-details .detail-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.35rem;
+        font-size: 0.94rem;
+        color: #4d6786;
+    }
+    .profile-details .detail-item i {
+        margin-right: 0.7em;
+        color: #8bbdd7;
+        font-size: 1.03em;
+    }
+    .profile-details span { font-weight: 500; }
+
+    /* Offers & Tips */
+    .offer-list, .tip-list { margin-bottom: 0; }
+    .offer-item, .tip-item {
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        display: flex;
+    }
+    .offer-item:last-child, .tip-item:last-child { margin-bottom: 0; }
+    .offer-icon {
+        width: 42px; height: 42px;
+        background: #e9f8ff;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin-right: 0.85rem; flex-shrink: 0;
+    }
+    .offer-icon i { color: #2ba1df; font-size: 1.25rem; }
+    .offer-content h6, .tip-item h6 { color: #2174a0; }
+    .offer-content small, .offer-content p,
+    .tip-item p, .tip-item small {
+        color: #7da5bb;
+    }
+    .bg-success { background: linear-gradient(135deg,#b8ebcd 60%, #47d09a 100%)!important;}
+    .bg-info { background: linear-gradient(135deg,#c1ebf7 60%, #33cfff 100%)!important;}
+    .text-purple { color: #a97fef !important; }
+    .text-warning { color: #FFA726 !important; }
+    .text-muted { color: #93b5cf !important; }
+
+    /* Misc */
+    .fw-bold { font-weight:700!important; }
+    .display-6 { font-size:2.05rem;}
+    .display-1, .display-2, .display-3, .display-4 { font-family:inherit; font-weight:800;}
+    .lead { color: #4d6786; font-size:1.12rem; }
+
+    /* Buttons */
+    .btn, .btn-lg, .btn-sm {
+        font-weight: 600;
+        border-radius: .45rem;
+    }
+    .btn-primary, .btn-outline-primary {
+        background: linear-gradient(135deg, #6fd1fb 0%, #266baf 100%);
+        color: #fff;
+        border: none;
+    }
+    .btn-outline-primary {
+        background: #fff !important;
+        color: #266baf !important;
+        border: 2px solid #b5e0ff !important;
+        box-shadow: none;
+    }
+    .btn-outline-primary:hover, .btn-primary:hover {
+        background: linear-gradient(135deg, #266baf 0%, #6fd1fb 100%) !important;
+        color: #fff !important;
+        border: none;
+        box-shadow: 0 2px 18px rgba(87,206,235,0.19);
+    }
+    .btn-light {
+        background: #edf7fa;
+        color: #2174a0;
+        border: 1.3px solid #d1eafd;
+        font-weight: 700;
+    }
+
+    /* Responsive Tweaks */
+    @media (max-width: 768px) {
+        .stat-card, .card, .quick-action-card, .offer-item, .tip-item {
+            border-radius: .7rem;
+            padding: 1.1em !important;
+        }
+        .dashboard-header, .dashboard-stats, .dashboard-content {
+            padding-left: 0!important; padding-right: 0!important;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="dashboard-page">
+    <!-- Dashboard Header -->
+    <section class="dashboard-header py-4 bg-gradient-primary text-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-6 fw-bold mb-2">
+                        Welcome back, {% if current_user %}{{ current_user.username }}{% else %}Guest{% endif %}!
+                    </h1>
+                    <p class="lead mb-0">Manage your bookings and explore new destinations</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <div class="dashboard-actions">
+                        <a href="{{ url_for('search') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-plus me-2"></i>New Booking
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Stats -->
+    <section class="dashboard-stats py-4 bg-light">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-number">{{ bookings|length if bookings else 0 }}</h3>
+                            <p class="stat-label">Total Bookings</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-number">₹{{ "{:,.0f}".format(bookings|sum(attribute='total_amount')|float) if bookings else 0 }}</h3>
+                            <p class="stat-label">Total Spent</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-number">{{ bookings[:5]|length if bookings else 0 }}</h3>
+                            <p class="stat-label">Recent Trips</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-number">Gold</h3>
+                            <p class="stat-label">Member Status</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Content -->
+    <section class="dashboard-content py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Recent Bookings -->
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-clock me-2"></i>Recent Bookings
+                            </h5>
+                            <a href="{{ url_for('manage_booking', booking_id='all') }}" class="btn btn-outline-primary btn-sm">
+                                View All
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            {% if bookings %}
+                                <div class="booking-list">
+                                    {% for booking in bookings[:5] %}
+                                    <div class="booking-item">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-1">
+                                                <div class="transport-icon">
+                                                    <i class="fas fa-{{ 'plane' if booking.transport_type == 'flight' else 'train' if booking.transport_type == 'train' else 'bus' }}" style="color: #87CEEB;"></i>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-4">
+                                                <div class="booking-route">
+                                                    <h6 class="mb-1">{{ booking.from_location or 'N/A' }} → {{ booking.to_location or 'N/A' }}</h6>
+                                                    <small class="text-muted">{{ booking.transport_type|title }} • {{ booking.booking_id }}</small>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-3">
+                                                <div class="booking-date">
+                                                    <p class="mb-0 fw-bold">{{ booking.travel_date.strftime('%d %b %Y') if booking.travel_date else 'TBD' }}</p>
+                                                    <small class="text-muted">{{ booking.departure_time or 'TBD' }}</small>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-2">
+                                                <div class="booking-status">
+                                                    <span class="badge bg-{{ 'success' if booking.status == 'Confirmed' else 'danger' if booking.status == 'Cancelled' else 'warning' }}">
+                                                        {{ booking.status|title }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-2">
+                                                <div class="booking-actions">
+                                                    <a href="{{ url_for('manage_booking', booking_id=booking.booking_id) }}" class="btn btn-outline-primary btn-sm">
+                                                        <i class="fas fa-eye me-1"></i>View
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="empty-state text-center py-4">
+                                    <i class="fas fa-ticket-alt fa-3x text-muted mb-3"></i>
+                                    <h5>No bookings yet</h5>
+                                    <p class="text-muted">Start your journey by booking your first trip!</p>
+                                    <a href="{{ url_for('search') }}" class="btn btn-primary">
+                                        <i class="fas fa-plus me-2"></i>Book Now
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-bolt me-2"></i>Quick Actions
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <a href="{{ url_for('search') }}" class="quick-action-card">
+                                        <div class="quick-action-icon">
+                                            <i class="fas fa-search"></i>
+                                        </div>
+                                        <div class="quick-action-content">
+                                            <h6>Search & Book</h6>
+                                            <p class="small text-muted">Find and book your next trip</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <a href="{{ url_for('track') }}" class="quick-action-card">
+                                        <div class="quick-action-icon">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                        </div>
+                                        <div class="quick-action-content">
+                                            <h6>Track Journey</h6>
+                                            <p class="small text-muted">Track your current bookings</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <a href="{{ url_for('contact') }}" class="quick-action-card">
+                                        <div class="quick-action-icon">
+                                            <i class="fas fa-headset"></i>
+                                        </div>
+                                        <div class="quick-action-content">
+                                            <h6>Support</h6>
+                                            <p class="small text-muted">Get help and support</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Profile Summary -->
+                    <div class="card mb-4">
+                        <div class="card-header text-white" style="background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);">
+                            <h6 class="mb-0">
+                                <i class="fas fa-user me-2"></i>Profile Summary
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="profile-info">
+                                <div class="profile-avatar text-center mb-3">
+                                    <div class="avatar-circle">
+                                        {% if current_user and current_user.username %}
+                                            {{ current_user.username[0]|upper }}{{ current_user.username[1]|upper if current_user.username|length > 1 else '' }}
+                                        {% else %}
+                                            GU
+                                        {% endif %}
+                                    </div>
+                                    <h6 class="mt-2 mb-0">{% if current_user %}{{ current_user.username }}{% else %}Guest User{% endif %}</h6>
+                                    <small class="text-muted">{% if current_user %}{{ current_user.email }}{% else %}guest@example.com{% endif %}</small>
+                                </div>
+                                
+                                <div class="profile-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-phone text-muted me-2"></i>
+                                        <span>{% if current_user and current_user.phone %}{{ current_user.phone }}{% else %}Not provided{% endif %}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-calendar text-muted me-2"></i>
+                                        <span>Member since {% if current_user and current_user.created_at %}{{ current_user.created_at.strftime('%B %Y') }}{% else %}Recently{% endif %}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-star text-warning me-2"></i>
+                                        <span>Gold Member</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Offers & Deals -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-tags me-2"></i>Exclusive Offers
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="offer-list">
+                                <div class="offer-item">
+                                    <div class="offer-icon">
+                                        <i class="fas fa-plane" style="color: #87CEEB;"></i>
+                                    </div>
+                                    <div class="offer-content">
+                                        <h6 class="mb-1">Flight Sale</h6>
+                                        <p class="small text-muted mb-1">Up to 40% off on domestic flights</p>
+                                        <small class="text-success">Valid till Dec 31</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="offer-item">
+                                    <div class="offer-icon">
+                                        <i class="fas fa-train" style="color: #87CEEB;"></i>
+                                    </div>
+                                    <div class="offer-content">
+                                        <h6 class="mb-1">Train Booking</h6>
+                                        <p class="small text-muted mb-1">Flat ₹200 off on train bookings</p>
+                                        <small class="text-success">Code: TRAIN200</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="offer-item">
+                                    <div class="offer-icon">
+                                        <i class="fas fa-bus" style="color: #87CEEB;"></i>
+                                    </div>
+                                    <div class="offer-content">
+                                        <h6 class="mb-1">Bus Travel</h6>
+                                        <p class="small text-muted mb-1">25% off on luxury bus bookings</p>
+                                        <small class="text-success">Code: LUXURY25</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Travel Tips -->
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-lightbulb me-2"></i>Travel Tips
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="tip-list">
+                                <div class="tip-item">
+                                    <h6 class="mb-1">Book in Advance</h6>
+                                    <p class="small text-muted">Save up to 30% by booking 2-3 weeks ahead</p>
+                                </div>
+                                
+                                <div class="tip-item">
+                                    <h6 class="mb-1">Travel Light</h6>
+                                    <p class="small text-muted">Pack smart to avoid extra baggage charges</p>
+                                </div>
+                                
+                                <div class="tip-item">
+                                    <h6 class="mb-1">Check Weather</h6>
+                                    <p class="small text-muted">Always check destination weather before travel</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function contactSupport() {
+    window.location.href = '{{ url_for("contact") }}';
+}
+
+// Auto-refresh dashboard data every 5 minutes
+setInterval(function() {
+    console.log('Refreshing dashboard data...');
+}, 300000);
+
+// Welcome animation
+document.addEventListener('DOMContentLoaded', function() {
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.5s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        }, index * 100);
+    });
+});
+</script>
+{% endblock %}

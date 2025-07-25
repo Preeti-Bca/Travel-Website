@@ -1,0 +1,410 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - STARBLUE{% endblock %}
+
+{% block extra_css %}
+<style>
+    .contact-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: skyblue;
+        padding: 4rem 0;
+    }
+    
+    .contact-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .contact-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .contact-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(135, 206, 235, 0.25);
+    }
+    
+    .contact-info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .contact-info-item:hover {
+        background: rgba(135, 206, 235, 0.1);
+        transform: translateX(5px);
+    }
+    
+    .contact-info-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: white;
+    }
+    
+    .faq-item {
+        background: white;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .faq-header {
+        padding: 1.5rem;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+        transition: all 0.3s ease;
+    }
+    
+    .faq-header:hover {
+        background: rgba(135, 206, 235, 0.05);
+    }
+    
+    .faq-content {
+        padding: 1.5rem;
+        display: none;
+    }
+    
+    .faq-content.active {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contact-page">
+    <!-- Header -->
+    <section class="contact-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-3">Get in Touch</h1>
+                    <p class="lead mb-0">We're here to help you with all your travel needs. Reach out to us anytime!</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <i class="fas fa-headset fa-5x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form & Info -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="contact-card">
+                        <h3 class="mb-4">
+                            <i class="fas fa-envelope me-2" style="color: var(--primary-color);"></i>
+                            Send us a Message
+                        </h3>
+                        
+                        <form method="POST" action="{{ url_for('contact') }}">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject *</label>
+                                <select class="form-control" id="subject" name="subject" required>
+                                    <option value="">Select a subject</option>
+                                    <option value="Booking Inquiry">Booking Inquiry</option>
+                                    <option value="Booking Modification">Booking Modification</option>
+                                    <option value="Cancellation Request">Cancellation Request</option>
+                                    <option value="Payment Issue">Payment Issue</option>
+                                    <option value="Technical Support">Technical Support</option>
+                                    <option value="Feedback">Feedback</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="message" class="form-label">Message *</label>
+                                <textarea class="form-control" id="message" name="message" rows="6" required placeholder="Please describe your inquiry in detail..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <!-- Contact Information -->
+                    <div class="contact-card">
+                        <h4 class="mb-4">
+                            <i class="fas fa-info-circle me-2" style="color: var(--primary-color);"></i>
+                            Contact Information
+                        </h4>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Phone Support</h6>
+                                <p class="mb-0 text-muted">+91 1234567890</p>
+                                <small class="text-muted">24/7 Available</small>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Email Support</h6>
+                                <p class="mb-0 text-muted">support@starblue.com</p>
+                                <small class="text-muted">Response within 24 hours</small>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Office Address</h6>
+                                <p class="mb-0 text-muted">123 Travel Street<br>Mumbai, Maharashtra 400001<br>India</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Business Hours</h6>
+                                <p class="mb-0 text-muted">Mon - Fri: 9:00 AM - 8:00 PM<br>Sat - Sun: 10:00 AM - 6:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Emergency Contact -->
+                    <div class="contact-card">
+                        <h5 class="mb-3">
+                            <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+                            Emergency Support
+                        </h5>
+                        <p class="text-muted mb-3">For urgent travel-related emergencies:</p>
+                        <a href="tel:+911234567890" class="btn btn-outline-danger btn-sm">
+                            <i class="fas fa-phone me-2"></i>Emergency Hotline
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Frequently Asked Questions</h2>
+                <p class="text-muted">Quick answers to common questions</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="faq-item">
+                        <div class="faq-header" onclick="toggleFaq(this)">
+                            <h6 class="mb-0">
+                                <i class="fas fa-question-circle me-2" style="color: var(--primary-color);"></i>
+                                How can I cancel my booking?
+                                <i class="fas fa-chevron-down float-end"></i>
+                            </h6>
+                        </div>
+                        <div class="faq-content">
+                            <p class="text-muted mb-0">You can cancel your booking by logging into your account and going to "My Bookings" section. Click on the booking you want to cancel and select "Cancel Booking". Please note that cancellation charges may apply based on the fare rules.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-header" onclick="toggleFaq(this)">
+                            <h6 class="mb-0">
+                                <i class="fas fa-question-circle me-2" style="color: var(--primary-color);"></i>
+                                What payment methods do you accept?
+                                <i class="fas fa-chevron-down float-end"></i>
+                            </h6>
+                        </div>
+                        <div class="faq-content">
+                            <p class="text-muted mb-0">We accept all major credit cards (Visa, MasterCard, American Express), debit cards, net banking, UPI, and digital wallets like Paytm, PhonePe, and Google Pay.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-header" onclick="toggleFaq(this)">
+                            <h6 class="mb-0">
+                                <i class="fas fa-question-circle me-2" style="color: var(--primary-color);"></i>
+                                How do I get my booking confirmation?
+                                <i class="fas fa-chevron-down float-end"></i>
+                            </h6>
+                        </div>
+                        <div class="faq-content">
+                            <p class="text-muted mb-0">After successful payment, you will receive a booking confirmation email with your e-ticket. You can also download your ticket from the "My Bookings" section in your account.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-header" onclick="toggleFaq(this)">
+                            <h6 class="mb-0">
+                                <i class="fas fa-question-circle me-2" style="color: var(--primary-color);"></i>
+                                Can I modify my booking after confirmation?
+                                <i class="fas fa-chevron-down float-end"></i>
+                            </h6>
+                        </div>
+                        <div class="faq-content">
+                            <p class="text-muted mb-0">Yes, you can modify your booking subject to availability and fare difference. Modification charges may apply. Please contact our support team or use the "Modify Booking" option in your account.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-header" onclick="toggleFaq(this)">
+                            <h6 class="mb-0">
+                                <i class="fas fa-question-circle me-2" style="color: var(--primary-color);"></i>
+                                What if my flight/train is delayed or cancelled?
+                                <i class="fas fa-chevron-down float-end"></i>
+                            </h6>
+                        </div>
+                        <div class="faq-content">
+                            <p class="text-muted mb-0">In case of delays or cancellations by the operator, you will be notified immediately. You can choose to get a full refund or reschedule your journey without additional charges. Our support team will assist you with the process.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Contact Cards -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Quick Contact Options</h2>
+                <p class="text-muted">Choose the best way to reach us</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="contact-card text-center">
+                        <div class="contact-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h5 class="mb-3">Live Chat</h5>
+                        <p class="text-muted mb-3">Get instant help from our support team</p>
+                        <button class="btn btn-outline-primary" onclick="startLiveChat()">
+                            <i class="fas fa-comment me-2"></i>Start Chat
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="contact-card text-center">
+                        <div class="contact-icon">
+                            <i class="fas fa-whatsapp"></i>
+                        </div>
+                        <h5 class="mb-3">WhatsApp</h5>
+                        <p class="text-muted mb-3">Message us on WhatsApp for quick support</p>
+                        <a href="https://wa.me/911234567890" class="btn btn-outline-success" target="_blank">
+                            <i class="fab fa-whatsapp me-2"></i>Message Us
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="contact-card text-center">
+                        <div class="contact-icon">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <h5 class="mb-3">Support Ticket</h5>
+                        <p class="text-muted mb-3">Create a support ticket for detailed assistance</p>
+                        <button class="btn btn-outline-info" onclick="createTicket()">
+                            <i class="fas fa-plus me-2"></i>Create Ticket
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if current_user %}
+<script>
+function toggleFaq(element) {
+    const content = element.nextElementSibling;
+    const icon = element.querySelector('.fa-chevron-down');
+    
+    if (content.classList.contains('active')) {
+        content.classList.remove('active');
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        // Close all other FAQs
+        document.querySelectorAll('.faq-content.active').forEach(item => {
+            item.classList.remove('active');
+        });
+        document.querySelectorAll('.fa-chevron-down').forEach(item => {
+            item.style.transform = 'rotate(0deg)';
+        });
+        
+        // Open clicked FAQ
+        content.classList.add('active');
+        icon.style.transform = 'rotate(180deg)';
+    }
+}
+
+function startLiveChat() {
+    alert('Live chat feature will be available soon! Please use email or phone for now.');
+}
+
+function createTicket() {
+    alert('Support ticket system will be available soon! Please use the contact form above.');
+}
+
+// Auto-fill form if user is logged in
+document.addEventListener('DOMContentLoaded', function() {
+    
+    document.getElementById('name').value = '{{ current_user.full_name or current_user.username }}';
+    document.getElementById('email').value = '{{ current_user.email }}';
+   
+}
+);
+                
+</script>
+ {% endif %}
+{% endblock %}
+

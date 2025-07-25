@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Bookings - Admin - STARBLUE{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-form-header">
+        <h1>All Bookings</h1>
+    </div>
+
+    {% if bookings %}
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Confirmation Code</th>
+                        <th>Passenger</th>
+                        <th>Transport Type</th>
+                        <th>Booking Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                        <tr>
+                            <td><strong>{{ booking.confirmation_code }}</strong></td>
+                            <td>{{ booking.passenger_name }}</td>
+                            <td>
+                                <span class="booking-type">{{ booking.transport_type.title() }}</span>
+                            </td>
+                            <td>{{ booking.booking_date.strftime('%m/%d/%Y %I:%M %p') }}</td>
+                            <td>
+                                <span class="status status-{{ booking.status.lower().replace(' ', '-') }}">
+                                    {{ booking.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-secondary">View Details</button>
+                                <button class="btn btn-sm btn-danger">Cancel</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-ticket-alt"></i>
+            <h3>No bookings found</h3>
+            <p>Bookings will appear here as customers make reservations</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

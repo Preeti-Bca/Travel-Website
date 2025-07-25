@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics - PURA ALL CONTROL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+    
+    /* === General Layout & Responsive Design === */
+body.admin-body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f7f8fa;
+    margin: 0;
+    min-height: 100vh;
+}
+
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    width: 250px;
+    background: #212a33;
+    color: #fff;
+    padding-top: 24px;
+    min-height: 100vh;
+    box-shadow: 2px 0 10px 0 rgba(9,30,66,.08);
+}
+
+.admin-main {
+    flex: 1;
+    padding: 32px 40px;
+    background: #f7f8fa;
+    transition: margin-left 0.3s;
+    min-height: 100vh;
+}
+
+@media (max-width: 900px) {
+    .admin-main {
+        padding: 18px 10px;
+    }
+    .admin-sidebar {
+        width: 70px;
+        padding: 0;
+    }
+    .sidebar-header h2,
+    .sidebar-menu span {
+        display: none;
+    }
+}
+
+/* === Sidebar === */
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    padding: 0 16px 28px 16px;
+}
+
+.sidebar-logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+    border-radius: 8px;
+    background: #2a3542;
+}
+
+.sidebar-header h2 {
+    font-weight: 700;
+    color: #fff;
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.sidebar-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-menu li {
+    margin-bottom: 16px;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #b5bac8;
+    padding: 13px 16px;
+    border-radius: 8px;
+    transition: background 0.18s, color 0.18s;
+}
+
+.sidebar-menu a.active,
+.sidebar-menu li.active a,
+.sidebar-menu a:hover {
+    background: #294154;
+    color: #fff;
+}
+
+.menu-icon {
+    width: 22px;
+    height: 22px;
+    margin-right: 10px;
+}
+
+@media (max-width: 900px) {
+    .sidebar-menu a {
+        justify-content: center;
+        padding: 12px 0;
+    }
+    .menu-icon {
+        margin: 0;
+    }
+}
+
+/* === Header & Date Range === */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px 24px;
+    box-shadow: 0 1px 3px rgba(20,40,90,0.05);
+}
+
+.date-range-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f0f3f9;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.date-range-picker input[type="date"] {
+    border: none;
+    background: #e8eaed;
+    border-radius: 4px;
+    padding: 4px 10px;
+    color: #495f7e;
+    font-size: 1rem;
+    outline: none;
+}
+
+.btn {
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    background: #3047ce;
+    color: #fff;
+    transition: background 0.17s;
+}
+
+.btn.btn-secondary {
+    background: #e6eaef;
+    color: #3047ce;
+}
+
+.btn.btn-secondary:hover,
+.btn.btn-primary:hover {
+    background: #193396;
+    color: #fff;
+}
+
+/* === Report Tabs === */
+.report-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.tab-btn {
+    background: #f0f3fa;
+    border: none;
+    border-radius: 6px 6px 0 0;
+    padding: 12px 28px;
+    color: #637093;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.19s, color 0.19s;
+}
+
+.tab-btn.active, .tab-btn:focus {
+    background: #fff;
+    color: #3047ce;
+    border-bottom: 2px solid #3047ce;
+}
+
+/* === Section Cards and Stats === */
+.report-section {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(23,48,100,0.08);
+    padding: 24px 26px 40px 26px;
+    margin-bottom: 32px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.revenue-stats,
+.booking-metrics,
+.customer-stats,
+.performance-metrics {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.revenue-card,
+.metric-card,
+.segment-card,
+.performance-card,
+.stat-item {
+    flex: 1;
+    min-width: 180px;
+    background: #f4f7fb;
+    border-radius: 10px;
+    padding: 22px 16px;
+    margin-right: 8px;
+    box-shadow: 0 1px 3px rgba(76,112,160,0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+}
+
+.revenue-icon, .performance-icon {
+    font-size: 1.5rem;
+    color: #3047ce;
+    margin-bottom: 8px;
+}
+
+/* === Analytics & Chart Containers === */
+.chart-container {
+    width: 100%;
+    min-height: 200px;
+    margin-top: 12px;
+    background: #fcfdff;
+    border-radius: 10px;
+    padding: 18px 14px 8px 14px;
+    box-shadow: 0 1px 2px rgba(76,112,160,0.03);
+}
+
+.metric-chart canvas,
+.segment-chart canvas {
+    width: 110px !important;
+    height: 45px !important;
+    margin-top: 8px;
+}
+
+@media (max-width: 1200px) {
+    .chart-container {
+        padding: 8px 2vw;
+    }
+    .revenue-stats,
+    .booking-metrics,
+    .performance-metrics {
+        flex-direction: column;
+        gap: 14px;
+    }
+}
+
+/* === Status & Growth Indicators === */
+.growth {
+    font-size: 0.93rem;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.growth.positive { color: #1cae54; }
+.growth.negative { color: #f35d2a; }
+
+.status {
+    padding: 2px 10px;
+    border-radius: 14px;
+    font-size: 0.85rem;
+    margin-left: 8px;
+}
+
+.status.good { background: #e7f7ef; color: #1cae54; }
+.status.excellent { background: #eaf4f7; color: #2390b4; }
+.status.normal { background: #ecf1fa; color: #3047ce; }
+
+/* === Tables, Progress Bars & Misc === */
+.routes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.route-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f4f6fa;
+    border-radius: 7px;
+    padding: 10px 16px;
+    box-shadow: 0 1px 2px rgba(44,70,120,0.03);
+}
+
+.progress-bar {
+    width: 120px;
+    background: #e6ecfa;
+    border-radius: 8px;
+    height: 8px;
+    overflow: hidden;
+}
+
+.progress {
+    background: #3047ce;
+    height: 100%;
+    border-radius: 8px;
+    transition: width 0.8s;
+}
+
+/* === Customer Segment Color Coding === */
+.legend-color {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    margin: 0 7px 0 0;
+    border-radius: 4px;
+}
+
+.legend-color.frequent    { background: #3047ce; }
+.legend-color.occasional  { background: #2390b4; }
+.legend-color.first-time  { background: #1cae54; }
+
+
+    </style>
+
+</head>
+<body class="admin-body">
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="admin-sidebar">
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='images/clipart/admin-dashboard.png') }}" alt="Admin" class="sidebar-logo">
+                <h2>PURA CONTROL</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_bookings') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/booking-management.png') }}" alt="Bookings" class="menu-icon">
+                        <span>Bookings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_users') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/users-management.png') }}" alt="Users" class="menu-icon">
+                        <span>Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_flights') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/flight-admin.png') }}" alt="Flights" class="menu-icon">
+                        <span>Flights</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_trains') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/train-admin.png') }}" alt="Trains" class="menu-icon">
+                        <span>Trains</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_buses') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/bus-admin.png') }}" alt="Buses" class="menu-icon">
+                        <span>Buses</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="{{ url_for('admin_reports') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/reports-analytics.png') }}" alt="Reports" class="menu-icon">
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_settings') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/settings-config.png') }}" alt="Settings" class="menu-icon">
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Reports & Analytics</h1>
+                </div>
+                <div class="header-right">
+                    <div class="date-range-picker">
+                        <input type="date" id="startDate" value="2024-01-01">
+                        <span>to</span>
+                        <input type="date" id="endDate" value="2024-12-31">
+                        <button class="btn btn-primary" onclick="updateReports()">
+                            <i class="fas fa-sync"></i>
+                            Update
+                        </button>
+                    </div>
+                    <div class="admin-profile">
+                        <img src="{{ url_for('static', filename='images/clipart/admin-dashboard.png') }}" alt="Admin" class="profile-img">
+                        <span>Super Admin</span>
+                        <a href="{{ url_for('logout') }}" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="reports-content">
+                <!-- Report Categories -->
+                <div class="report-tabs">
+                    <button class="tab-btn active" onclick="showTab('revenue')">
+                        <i class="fas fa-dollar-sign"></i>
+                        Revenue Analytics
+                    </button>
+                    <button class="tab-btn" onclick="showTab('bookings')">
+                        <i class="fas fa-chart-line"></i>
+                        Booking Analytics
+                    </button>
+                    <button class="tab-btn" onclick="showTab('customers')">
+                        <i class="fas fa-users"></i>
+                        Customer Analytics
+                    </button>
+                    <button class="tab-btn" onclick="showTab('performance')">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Performance
+                    </button>
+                </div>
+
+                <!-- Revenue Analytics Tab -->
+                <div class="tab-content active" id="revenue">
+                    <div class="report-section">
+                        <div class="section-header">
+                            <h3>Revenue Overview</h3>
+                            <div class="export-buttons">
+                                <button class="btn btn-secondary" onclick="exportReport('revenue', 'pdf')">
+                                    <i class="fas fa-file-pdf"></i>
+                                    PDF
+                                </button>
+                                <button class="btn btn-secondary" onclick="exportReport('revenue', 'excel')">
+                                    <i class="fas fa-file-excel"></i>
+                                    Excel
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="revenue-stats">
+                            <div class="revenue-card">
+                                <div class="revenue-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="revenue-info">
+                                    <h4>$125,450</h4>
+                                    <p>Total Revenue</p>
+                                    <span class="growth positive">+15.2%</span>
+                                </div>
+                            </div>
+                            <div class="revenue-card">
+                                <div class="revenue-icon">
+                                    <i class="fas fa-plane"></i>
+                                </div>
+                                <div class="revenue-info">
+                                    <h4>$78,230</h4>
+                                    <p>Flight Revenue</p>
+                                    <span class="growth positive">+12.8%</span>
+                                </div>
+                            </div>
+                            <div class="revenue-card">
+                                <div class="revenue-icon">
+                                    <i class="fas fa-train"></i>
+                                </div>
+                                <div class="revenue-info">
+                                    <h4>$32,120</h4>
+                                    <p>Train Revenue</p>
+                                    <span class="growth positive">+18.5%</span>
+                                </div>
+                            </div>
+                            <div class="revenue-card">
+                                <div class="revenue-icon">
+                                    <i class="fas fa-bus"></i>
+                                </div>
+                                <div class="revenue-info">
+                                    <h4>$15,100</h4>
+                                    <p>Bus Revenue</p>
+                                    <span class="growth positive">+22.1%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Analytics Tab -->
+                <div class="tab-content" id="bookings">
+                    <div class="report-section">
+                        <div class="section-header">
+                            <h3>Booking Performance</h3>
+                            <div class="export-buttons">
+                                <button class="btn btn-secondary" onclick="exportReport('bookings', 'pdf')">
+                                    <i class="fas fa-file-pdf"></i>
+                                    PDF
+                                </button>
+                                <button class="btn btn-secondary" onclick="exportReport('bookings', 'excel')">
+                                    <i class="fas fa-file-excel"></i>
+                                    Excel
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="booking-metrics">
+                            <div class="metric-card">
+                                <h4>2,450</h4>
+                                <p>Total Bookings</p>
+                                <div class="metric-chart">
+                                    <canvas id="totalBookingsChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>89.5%</h4>
+                                <p>Booking Success Rate</p>
+                                <div class="metric-chart">
+                                    <canvas id="successRateChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>12.3</h4>
+                                <p>Avg. Days in Advance</p>
+                                <div class="metric-chart">
+                                    <canvas id="advanceBookingChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="popular-routes">
+                            <h4>Top Routes by Bookings</h4>
+                            <div class="routes-list">
+                                <div class="route-item">
+                                    <div class="route-info">
+                                        <span class="route-name">Mumbai → Delhi</span>
+                                        <span class="route-type">Flight</span>
+                                    </div>
+                                    <div class="route-stats">
+                                        <span class="booking-count">450 bookings</span>
+                                        <div class="progress-bar">
+                                            <div class="progress" style="width: 90%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="route-item">
+                                    <div class="route-info">
+                                        <span class="route-name">Delhi → Bangalore</span>
+                                        <span class="route-type">Flight</span>
+                                    </div>
+                                    <div class="route-stats">
+                                        <span class="booking-count">380 bookings</span>
+                                        <div class="progress-bar">
+                                            <div class="progress" style="width: 76%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="route-item">
+                                    <div class="route-info">
+                                        <span class="route-name">Mumbai → Pune</span>
+                                        <span class="route-type">Train</span>
+                                    </div>
+                                    <div class="route-stats">
+                                        <span class="booking-count">320 bookings</span>
+                                        <div class="progress-bar">
+                                            <div class="progress" style="width: 64%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Analytics Tab -->
+                <div class="tab-content" id="customers">
+                    <div class="report-section">
+                        <div class="section-header">
+                            <h3>Customer Insights</h3>
+                            <div class="export-buttons">
+                                <button class="btn btn-secondary" onclick="exportReport('customers', 'pdf')">
+                                    <i class="fas fa-file-pdf"></i>
+                                    PDF
+                                </button>
+                                <button class="btn btn-secondary" onclick="exportReport('customers', 'excel')">
+                                    <i class="fas fa-file-excel"></i>
+                                    Excel
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="customer-segments">
+                            <div class="segment-card">
+                                <div class="segment-header">
+                                    <h4>Customer Segmentation</h4>
+                                </div>
+                                <div class="segment-chart">
+                                    <canvas id="customerSegmentChart"></canvas>
+                                </div>
+                                <div class="segment-legend">
+                                    <div class="legend-item">
+                                        <span class="legend-color frequent"></span>
+                                        <span>Frequent Travelers (35%)</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color occasional"></span>
+                                        <span>Occasional Travelers (45%)</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color first-time"></span>
+                                        <span>First-time Travelers (20%)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="customer-stats">
+                                <div class="stat-item">
+                                    <h5>1,250</h5>
+                                    <p>Active Customers</p>
+                                </div>
+                                <div class="stat-item">
+                                    <h5>$102</h5>
+                                    <p>Avg. Booking Value</p>
+                                </div>
+                                <div class="stat-item">
+                                    <h5>3.2</h5>
+                                    <p>Avg. Bookings/Customer</p>
+                                </div>
+                                <div class="stat-item">
+                                    <h5>78%</h5>
+                                    <p>Customer Retention</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Tab -->
+                <div class="tab-content" id="performance">
+                    <div class="report-section">
+                        <div class="section-header">
+                            <h3>System Performance</h3>
+                            <div class="export-buttons">
+                                <button class="btn btn-secondary" onclick="exportReport('performance', 'pdf')">
+                                    <i class="fas fa-file-pdf"></i>
+                                    PDF
+                                </button>
+                                <button class="btn btn-secondary" onclick="exportReport('performance', 'excel')">
+                                    <i class="fas fa-file-excel"></i>
+                                    Excel
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="performance-metrics">
+                            <div class="performance-card">
+                                <div class="performance-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="performance-info">
+                                    <h4>1.2s</h4>
+                                    <p>Avg. Response Time</p>
+                                    <span class="status good">Good</span>
+                                </div>
+                            </div>
+                            <div class="performance-card">
+                                <div class="performance-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="performance-info">
+                                    <h4>99.8%</h4>
+                                    <p>System Uptime</p>
+                                    <span class="status excellent">Excellent</span>
+                                </div>
+                            </div>
+                            <div class="performance-card">
+                                <div class="performance-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="performance-info">
+                                    <h4>0.2%</h4>
+                                    <p>Error Rate</p>
+                                    <span class="status good">Good</span>
+                                </div>
+                            </div>
+                            <div class="performance-card">
+                                <div class="performance-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="performance-info">
+                                    <h4>1,450</h4>
+                                    <p>Active Sessions</p>
+                                    <span class="status normal">Normal</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="performance-charts">
+                            <div class="chart-container">
+                                <h4>Response Time Trend</h4>
+                                <canvas id="responseTimeChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h4>System Load</h4>
+                                <canvas id="systemLoadChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/admin-reports.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,706 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if booking %}
+Booking {{ booking.booking_id }} - STARBLUE
+{% else %}
+My Bookings - STARBLUE
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    body, .manage-booking-page {
+        background: #f7f8fc;
+    }
+    .booking-header {
+        background: linear-gradient(135deg, #57a1f8 0%, #864fd2 100%);
+        color: #fff;
+        padding: 2.5rem 0 2rem 0;
+        border-bottom-left-radius: 2.5rem;
+        border-bottom-right-radius: 2.5rem;
+        box-shadow: 0 6px 38px rgba(73,97,172,0.17);
+    }
+    .booking-header h1, .booking-header p {
+        color: #fff !important;
+        text-shadow: 0 4px 16px rgba(81,65,182,0.21);
+    }
+    .btn-light {
+        background: #fff !important;
+        color: #5841c7 !important;
+        border: 2px solid #d7d9ee;
+        font-weight: 600;
+        transition: background .2s, color .2s, box-shadow .2s;
+    }
+    .btn-light:hover {
+        background: #eceafb !important;
+        color: #4338a9 !important;
+        box-shadow: 0 0 0 2px #d7d9ee;
+    }
+    /* Booking card */
+    .booking-card {
+        background: linear-gradient(135deg, #fff 80%, #f3f5fb 100%);
+        border-radius: 1rem;
+        box-shadow: 0 8px 32px rgba(81,65,182,0.10);
+        margin-bottom: 2rem;
+        position: relative;
+        border: 1px solid #eceafd;
+        transition: transform 0.22s cubic-bezier(.48,0,.62,1.16), box-shadow 0.17s;
+    }
+    .booking-card:hover {
+        transform: translateY(-7px) scale(1.016);
+        box-shadow: 0 18px 48px -12px #7f54ce33;
+    }
+    .card-body {
+        background: none !important;
+        padding: 2rem !important;
+    }
+    .booking-status {
+        position: absolute;
+        top: 1.1rem;
+        right: 1.3rem;
+        z-index: 2;
+        box-shadow: 0 2px 12px rgba(120,82,255,0.09);
+    }
+    .badge.bg-success {
+        background: linear-gradient(120deg,#60ecae 60%, #289af9 100%)!important;
+        color: #194567 !important;
+    }
+    .badge.bg-danger {
+        background: linear-gradient(120deg,#e1617f 60%, #8b34ba 100%)!important;
+        color: #fff !important;
+    }
+    .badge.bg-warning {
+        background: linear-gradient(120deg,#ffe884 60%, #febb43 100%)!important;
+        color: #695c13 !important;
+    }
+    .badge.bg-secondary {
+        background: #ecebf6 !important;
+        color: #483280 !important;
+        border: 1px solid #e4e7f2;
+    }
+    /* Icon */
+    .transport-icon {
+        width: 58px;
+        height: 58px;
+        background: linear-gradient(135deg, #e2e3fa 55%, #ece2fc 100%);
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 50%;
+        margin-right: 1.2rem;
+        box-shadow: 0 3px 16px #bda6ff12;
+        border: 2px solid #dbe7ff;
+    }
+    .transport-icon i {
+        color: #4578ec;
+        font-size: 2rem;
+    }
+    .card-header {
+        background: linear-gradient(120deg, #f6eafa 70%, #eaf4fd 100%);
+        border-radius: 1rem 1rem 0 0;
+        border-bottom: 1px solid #eceafd;
+        font-weight: 700;
+        color: #6148b8;
+        letter-spacing: .02em;
+    }
+    .route-info {
+        display: flex;
+        align-items: center;
+        margin: 1.1rem 0;
+    }
+    .route-dot {
+        width: 14px;
+        height: 14px;
+        background: linear-gradient(135deg,#2a90e9,#8e7eea 80%);
+        border-radius: 50%;
+        margin: 0 1rem;
+        box-shadow: 0 3px 10px #b1bbec23;
+    }
+    .route-line {
+        flex: 1;
+        height: 3px;
+        background: linear-gradient(to right, #57a1f8, #764ba2 100%);
+        margin: 0 0.6rem;
+        border-radius: 100px;
+        box-shadow: 0 0 8px 1px #667eea11;
+    }
+    /* Passenger Info */
+    .passenger-info {
+        background: #f5f7fd;
+        border-radius: 0.9rem;
+        padding: 1.5rem;
+        margin: 1.2rem 0 1.6rem 0;
+        box-shadow: 0 2px 8px #c1c2e87a;
+        border: 1px solid #f0eafd;
+    }
+    .passenger-info h6 {
+        color: #5e45d8;
+        font-weight: 700;
+    }
+    /* Timeline */
+    .booking-timeline {
+        position: relative;
+        padding-left: 2.1rem;
+    }
+    .timeline-item {
+        position: relative;
+        padding-bottom: 1.6rem;
+    }
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -2.1rem;
+        top: 0.45rem;
+        width: 15px;
+        height: 15px;
+        background: linear-gradient(135deg,#624de7 50%,#00bcff 100%);
+        border-radius: 50%;
+        border: 3px solid #fff;
+        box-shadow: 0 0 0 3px #e8e4fa;
+    }
+    .timeline-item::after {
+        content: '';
+        position: absolute;
+        left: -1.55rem;
+        top: 1.6rem;
+        width: 2.2px;
+        height: calc(100% - 1.3rem);
+        background: #d6dfff;
+    }
+    .timeline-item:last-child::after { display: none;}
+    .timeline-item h6 { font-weight:600; color:#6a67e8;}
+    /* All bookings cards grid */
+    .booking-item {
+        padding-top: 1.1rem;
+        padding-bottom: 1.1rem;
+        margin-bottom: 2rem;
+        border-radius: 1.1rem;
+        border: none;
+        background: none;
+        transition: box-shadow .18s, background .18s;
+    }
+    .booking-item .booking-card {
+        border: 1.5px solid #eceafd;
+        background: linear-gradient(120deg,#fff 72%,#edeafd 100%);
+    }
+    .booking-item .booking-card:hover {
+        box-shadow: 0 8px 28px #bba4fd2c;
+        background: linear-gradient(120deg,#f8f6ff 45%,#f3f2fd 100%);
+    }
+    /* Filter tabs */
+    .filter-tabs {
+        background: #f4faff;
+        border-radius: 1rem;
+        padding: 1.1rem 0.6rem;
+        margin-bottom: 2.2rem;
+        box-shadow: 0 2px 12px #dbe3fa60;
+        border: 1px solid #e5eaff;
+        overflow-x: auto;
+    }
+    .filter-btn {
+        background: transparent;
+        border: none;
+        padding: 0.85rem 1.7rem;
+        border-radius: 9px;
+        color: #6a67e8;
+        font-weight: 600;
+        transition: all 0.2s cubic-bezier(.37,.58,.34,1.36);
+        margin: 0 0.15rem;
+        font-size: 1.07rem;
+        outline: none;
+    }
+    .filter-btn.active, .filter-btn:focus {
+        background: linear-gradient(135deg, #a7bafc 0%, #8447cd 100%);
+        color: #fff;
+        transform: translateY(-2px) scale(1.075);
+        box-shadow: 0 7px 24px #6244e644;
+    }
+    /* Action buttons */
+    .action-btn {
+        padding: 0.57rem 1.2rem !important;
+        border-radius: 2rem !important;
+        font-size: .95rem;
+        font-weight: 600;
+        margin: 0.25rem;
+        background: #f8f9fb;
+        letter-spacing: .03em;
+        box-shadow: 0 3px 12px #a1b8fab2;
+    }
+    .action-btn.btn-outline-primary {
+        background: #fff !important;
+        color: #6a67e8 !important;
+        border: 2px solid #a0b4fa !important;
+    }
+    .action-btn.btn-outline-danger {
+        background: #fff !important;
+        color: #e24e74 !important;
+        border: 2px solid #fab1be !important;
+    }
+    .action-btn.btn-primary {
+        background: linear-gradient(120deg,#7e98fa 70%,#6d49c5 100%)!important;
+        color: #fff !important;
+        border: 2px solid #a0b4fa !important;
+    }
+    .action-btn.btn-outline-secondary {
+        color: #624de7 !important;
+        background: #f7f6fb !important;
+        border: 1.6px solid #e3e0f7 !important;
+    }
+    .action-btn:hover {
+        transform: scale(1.055) translateY(-2.5px);
+        text-decoration: none;
+        box-shadow: 0 1px 12px 0 #a588f72a;
+        opacity: .98;
+    }
+    /* QR Code */
+    .qr-code {
+        width: 130px;
+        height: 130px;
+        background: #f4f9ff;
+        border: 2.7px dashed #b4c7f3;
+        border-radius: 16px;
+        display: flex;
+        align-items: center; justify-content: center;
+        margin: 0 auto;
+        box-shadow: 0 4px 14px #abb8e51b;
+        transition: border-color 0.24s;
+    }
+    .qr-code i {
+        color: #a2b9e5;
+        font-size: 3.4rem;
+        opacity: 0.85;
+    }
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 3.4rem 2rem;
+        background: linear-gradient(135deg,#fafaff 70%, #f2ebfb 100%);
+        border-radius: 1.3rem;
+        color: #7b7b9b;
+        box-shadow: 0 1px 30px #a9befd13;
+        margin: 2rem auto;
+        border: 1px solid #e3eafd;
+        max-width: 570px;
+    }
+    .empty-state i {
+        font-size: 4.2rem;
+        margin-bottom: 1rem;
+        color: #d9caea;
+        opacity: 0.54;
+    }
+    .empty-state h4 { color: #6d49c5; font-weight:700;}
+    .empty-state p { color: #8a7fb5;}
+    /* General tweaks */
+    .fw-bold { font-weight: 700 !important; }
+    .display-6 { font-size: 2.2rem;}
+    .lead { font-size: 1.18rem; color: #fff8fa;}
+    @media (max-width: 768px) {
+        .booking-header { border-radius: 0 0 1.2rem 1.2rem;}
+        .filter-tabs, .empty-state, .booking-card, .passenger-info {
+            border-radius: .8rem;
+            padding: 1.1em !important;
+        }
+        .card-body {padding:1.1rem!important;}
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="manage-booking-page">
+    <!-- Header -->
+    <section class="booking-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    {% if booking %}
+                    <h1 class="display-6 fw-bold mb-2">Booking Details</h1>
+                    <p class="lead mb-0">Booking ID: {{ booking.booking_id }}</p>
+                    {% else %}
+                    <h1 class="display-6 fw-bold mb-2">My Bookings</h1>
+                    <p class="lead mb-0">Manage all your travel bookings</p>
+                    {% endif %}
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    {% if booking %}
+                    <a href="{{ url_for('manage_booking', booking_id='all') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i>Back to All Bookings
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('search') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-plus me-2"></i>New Booking
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5">
+        <div class="container">
+            {% if booking %}
+            <!-- Single Booking View -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="booking-card">
+                        <div class="booking-status">
+                            <span class="badge bg-{{ 'success' if booking.status == 'Confirmed' else 'danger' if booking.status == 'Cancelled' else 'warning' }} fs-6">
+                                {{ booking.status }}
+                            </span>
+                        </div>
+                        
+                        <div class="card-body p-4">
+                            <!-- Transport Info -->
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="transport-icon">
+                                    <i class="fas fa-{{ 'plane' if booking.transport_type == 'flight' else 'train' if booking.transport_type == 'train' else 'bus' }} fa-2x text-primary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="mb-1">{{ booking.transport_type|title }} Journey</h4>
+                                    <p class="text-muted mb-0">
+                                        {% if booking.transport_details %}
+                                        {{ booking.transport_details.flight_number or booking.transport_details.train_number or booking.transport_details.bus_number }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Route Information -->
+                            {% if booking.transport_details %}
+                            <div class="route-info">
+                                <div class="text-center">
+                                    <h5 class="mb-1">{{ booking.transport_details.from_location }}</h5>
+                                    <small class="text-muted">{{ booking.transport_details.departure_time.strftime('%H:%M') if booking.transport_details.departure_time else 'TBD' }}</small>
+                                </div>
+                                <div class="route-dot"></div>
+                                <div class="route-line"></div>
+                                <div class="route-dot"></div>
+                                <div class="text-center">
+                                    <h5 class="mb-1">{{ booking.transport_details.to_location }}</h5>
+                                    <small class="text-muted">{{ booking.transport_details.arrival_time.strftime('%H:%M') if booking.transport_details.arrival_time else 'TBD' }}</small>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Passenger Information -->
+                            <div class="passenger-info">
+                                <h6 class="mb-3">
+                                    <i class="fas fa-user me-2"></i>Passenger Information
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="mb-2"><strong>Name:</strong> {{ booking.passenger_name }}</p>
+                                        <p class="mb-2"><strong>Email:</strong> {{ booking.passenger_email }}</p>
+                                        <p class="mb-2"><strong>Phone:</strong> {{ booking.passenger_phone }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% if booking.passenger_age %}
+                                        <p class="mb-2"><strong>Age:</strong> {{ booking.passenger_age }}</p>
+                                        {% endif %}
+                                        {% if booking.passenger_gender %}
+                                        <p class="mb-2"><strong>Gender:</strong> {{ booking.passenger_gender }}</p>
+                                        {% endif %}
+                                        {% if booking.seat_number %}
+                                        <p class="mb-2"><strong>Seat:</strong> {{ booking.seat_number }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% if booking.special_requests %}
+                                <div class="mt-3">
+                                    <p class="mb-1"><strong>Special Requests:</strong></p>
+                                    <p class="text-muted">{{ booking.special_requests }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Booking Timeline -->
+                            <div class="booking-timeline">
+                                <h6 class="mb-3">
+                                    <i class="fas fa-clock me-2"></i>Booking Timeline
+                                </h6>
+                                <div class="timeline-item">
+                                    <h6 class="mb-1">Booking Created</h6>
+                                    <small class="text-muted">{{ booking.booking_date.strftime('%B %d, %Y at %I:%M %p') if booking.booking_date else 'Unknown' }}</small>
+                                </div>
+                                {% if booking.payment_status == 'Completed' %}
+                                <div class="timeline-item">
+                                    <h6 class="mb-1">Payment Completed</h6>
+                                    <small class="text-muted">{{ booking.payment_method or 'Credit Card' }}</small>
+                                </div>
+                                {% endif %}
+                                {% if booking.status == 'Confirmed' %}
+                                <div class="timeline-item">
+                                    <h6 class="mb-1">Booking Confirmed</h6>
+                                    <small class="text-muted">Ready for travel</small>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="d-flex flex-wrap justify-content-center mt-4">
+                                {% if booking.status == 'Confirmed' %}
+                                <a href="#" onclick="downloadTicket('{{ booking.booking_id }}')" class="action-btn btn btn-primary">
+                                    <i class="fas fa-download me-2"></i>Download Ticket
+                                </a>
+                                <a href="#" onclick="printTicket('{{ booking.booking_id }}')" class="action-btn btn btn-outline-primary">
+                                    <i class="fas fa-print me-2"></i>Print Ticket
+                                </a>
+                                {% endif %}
+                                
+                                {% if booking.status in ['Pending', 'Confirmed'] %}
+                                <button onclick="cancelBooking('{{ booking.booking_id }}')" class="action-btn btn btn-outline-danger">
+                                    <i class="fas fa-times me-2"></i>Cancel Booking
+                                </button>
+                                {% endif %}
+                                
+                                <a href="#" onclick="contactSupport('{{ booking.booking_id }}')" class="action-btn btn btn-outline-secondary">
+                                    <i class="fas fa-headset me-2"></i>Contact Support
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- QR Code -->
+                    {% if booking.status == 'Confirmed' %}
+                    <div class="card mb-4">
+                        <div class="card-header text-center">
+                            <h6 class="mb-0">
+                                <i class="fas fa-qrcode me-2"></i>Boarding Pass
+                            </h6>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="qr-code">
+                                <i class="fas fa-qrcode fa-3x text-muted"></i>
+                            </div>
+                            <p class="small text-muted mt-2">Show this QR code at check-in</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Booking Summary -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-receipt me-2"></i>Booking Summary
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Travel Date:</span>
+                                <strong>{{ booking.travel_date.strftime('%B %d, %Y') if booking.travel_date else 'TBD' }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Total Amount:</span>
+                                <strong>₹{{ "{:,.2f}".format(booking.total_amount) }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Payment Status:</span>
+                                <span class="badge bg-{{ 'success' if booking.payment_status == 'Completed' else 'warning' }}">
+                                    {{ booking.payment_status }}
+                                </span>
+                            </div>
+                            {% if booking.payment_method %}
+                            <div class="d-flex justify-content-between">
+                                <span>Payment Method:</span>
+                                <span>{{ booking.payment_method }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- All Bookings View -->
+            <div class="filter-tabs">
+                <div class="d-flex justify-content-center flex-wrap">
+                    <button class="filter-btn active" onclick="filterBookings('all')">
+                        <i class="fas fa-list me-2"></i>All Bookings
+                    </button>
+                    <button class="filter-btn" onclick="filterBookings('confirmed')">
+                        <i class="fas fa-check-circle me-2"></i>Confirmed
+                    </button>
+                    <button class="filter-btn" onclick="filterBookings('pending')">
+                        <i class="fas fa-clock me-2"></i>Pending
+                    </button>
+                    <button class="filter-btn" onclick="filterBookings('cancelled')">
+                        <i class="fas fa-times-circle me-2"></i>Cancelled
+                    </button>
+                </div>
+            </div>
+
+            {% if bookings %}
+            <div class="row" id="bookings-container">
+                {% for booking in bookings %}
+                <div class="col-lg-6 booking-item" data-status="{{ booking.status.lower() }}">
+                    <div class="booking-card">
+                        <div class="booking-status">
+                            <span class="badge bg-{{ 'success' if booking.status == 'Confirmed' else 'danger' if booking.status == 'Cancelled' else 'warning' }}">
+                                {{ booking.status }}
+                            </span>
+                        </div>
+                        
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="transport-icon">
+                                    <i class="fas fa-{{ 'plane' if booking.transport_type == 'flight' else 'train' if booking.transport_type == 'train' else 'bus' }} fa-lg text-primary"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">{{ booking.transport_type|title }}</h5>
+                                    <p class="text-muted mb-0">{{ booking.booking_id }}</p>
+                                </div>
+                            </div>
+
+                            {% if booking.transport_details %}
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">{{ booking.transport_details.from_location }}</h6>
+                                        <small class="text-muted">{{ booking.transport_details.departure_time.strftime('%H:%M') if booking.transport_details.departure_time else 'TBD' }}</small>
+                                    </div>
+                                    <i class="fas fa-arrow-right text-muted"></i>
+                                    <div class="text-end">
+                                        <h6 class="mb-0">{{ booking.transport_details.to_location }}</h6>
+                                        <small class="text-muted">{{ booking.transport_details.arrival_time.strftime('%H:%M') if booking.transport_details.arrival_time else 'TBD' }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <small class="text-muted">Travel Date</small>
+                                    <div class="fw-bold">{{ booking.travel_date.strftime('%b %d, %Y') if booking.travel_date else 'TBD' }}</div>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted">Amount</small>
+                                    <div class="fw-bold">₹{{ "{:,.0f}".format(booking.total_amount) }}</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-user me-1"></i>{{ booking.passenger_name }}
+                                </small>
+                                <a href="{{ url_for('manage_booking', booking_id=booking.booking_id) }}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-eye me-1"></i>View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-ticket-alt"></i>
+                <h4>No bookings found</h4>
+                <p class="text-muted">You haven't made any bookings yet. Start your journey today!</p>
+                <a href="{{ url_for('search') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus me-2"></i>Book Your First Trip
+                </a>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if booking %}
+<script>
+// Filter bookings
+function filterBookings(status) {
+    const bookings = document.querySelectorAll('.booking-item');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    
+    // Update active filter button
+    filterBtns.forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Show/hide bookings based on filter
+    bookings.forEach(booking => {
+        const bookingStatus = booking.getAttribute('data-status');
+        if (status === 'all' || bookingStatus === status) {
+            booking.style.display = 'block';
+        } else {
+            booking.style.display = 'none';
+        }
+    });
+}
+
+// Cancel booking
+function cancelBooking(bookingId) {
+    if (confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) {
+        fetch(`/api/booking/${bookingId}/cancel`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Booking cancelled successfully');
+                location.reload();
+            } else {
+                alert('Error cancelling booking: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error cancelling booking');
+        });
+    }
+}
+
+// Download ticket
+function downloadTicket(bookingId) {
+    // Create a simple ticket download
+    const ticketData = {
+        bookingId: bookingId,
+        downloadDate: new Date().toISOString(),
+        message: 'This is your STARBLUE booking confirmation'
+    };
+    
+    const dataStr = JSON.stringify(ticketData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `starblue_ticket_${bookingId}.json`;
+    link.click();
+}
+
+// Print ticket
+function printTicket(bookingId) {
+    window.print();
+}
+
+// Contact support
+function contactSupport(bookingId) {
+    const message = `Hello, I need assistance with my booking ${bookingId}. Please help me with...`;
+    const subject = `Support Request - Booking ${bookingId}`;
+    const mailtoLink = `mailto:support@starblue.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+    window.location.href = mailtoLink;
+}
+
+// Auto-refresh for single booking view
+
+setInterval(function() {
+    // Check for booking status updates
+    fetch(`/api/booking/${booking.booking_id}/status`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status !== '{{ booking.status }}') {
+                location.reload();
+            }
+        })
+        .catch(error => console.log('Status check failed:', error));
+}, 30000); // Check every 30 seconds
+
+</script>
+{% endif %}
+{% endblock %}

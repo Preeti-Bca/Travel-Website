@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - PURA ALL CONTROL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="admin-sidebar">
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='images/clipart/admin-dashboard.png') }}" alt="Admin" class="sidebar-logo">
+                <h2>PURA CONTROL</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_bookings') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/booking-management.png') }}" alt="Bookings" class="menu-icon">
+                        <span>Bookings</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="{{ url_for('admin_users') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/users-management.png') }}" alt="Users" class="menu-icon">
+                        <span>Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_flights') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/flight-admin.png') }}" alt="Flights" class="menu-icon">
+                        <span>Flights</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_trains') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/train-admin.png') }}" alt="Trains" class="menu-icon">
+                        <span>Trains</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_buses') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/bus-admin.png') }}" alt="Buses" class="menu-icon">
+                        <span>Buses</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_reports') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/reports-analytics.png') }}" alt="Reports" class="menu-icon">
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_settings') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/settings-config.png') }}" alt="Settings" class="menu-icon">
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>User Management</h1>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-primary" onclick="openAddUserModal()">
+                        <i class="fas fa-plus"></i>
+                        Add New User
+                    </button>
+                    <div class="admin-profile">
+                        <img src="{{ url_for('static', filename='images/clipart/admin-dashboard.png') }}" alt="Admin" class="profile-img">
+                        <span>Super Admin</span>
+                        <a href="{{ url_for('logout') }}" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <!-- Filters and Search -->
+                <div class="filters-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="userSearch" placeholder="Search users by name, email, or ID...">
+                    </div>
+                    <div class="filter-controls">
+                        <select id="roleFilter">
+                            <option value="">All Roles</option>
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                        </select>
+                        <select id="statusFilter">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        <button class="btn btn-secondary" onclick="exportUsers()">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bulk Actions -->
+                <div class="bulk-actions" id="bulkActions" style="display: none;">
+                    <div class="bulk-info">
+                        <span id="selectedCount">0</span> users selected
+                    </div>
+                    <div class="bulk-buttons">
+                        <button class="btn btn-success" onclick="bulkActivate()">
+                            <i class="fas fa-check"></i>
+                            Activate
+                        </button>
+                        <button class="btn btn-warning" onclick="bulkDeactivate()">
+                            <i class="fas fa-ban"></i>
+                            Deactivate
+                        </button>
+                        <button class="btn btn-danger" onclick="bulkDelete()">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="table-container">
+                    <table class="admin-table" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                </th>
+                                <th>ID</th>
+                                <th>Avatar</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Bookings</th>
+                                <th>Last Login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td><input type="checkbox" class="user-checkbox" value="1"></td>
+                                <td>#001</td>
+                                <td>
+                                    <img src="{{ url_for('static', filename='images/clipart/users-management.png') }}" alt="User" class="user-avatar">
+                                </td>
+                                <td>John Doe</td>
+                                <td>john.doe@email.com</td>
+                                <td><span class="badge badge-admin">Admin</span></td>
+                                <td><span class="badge badge-active">Active</span></td>
+                                <td>25</td>
+                                <td>2 hours ago</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-edit" onclick="editUser(1)" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-icon btn-view" onclick="viewUser(1)" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn-icon btn-delete" onclick="deleteUser(1)" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="user-checkbox" value="2"></td>
+                                <td>#002</td>
+                                <td>
+                                    <img src="{{ url_for('static', filename='images/clipart/users-management.png') }}" alt="User" class="user-avatar">
+                                </td>
+                                <td>Jane Smith</td>
+                                <td>jane.smith@email.com</td>
+                                <td><span class="badge badge-user">User</span></td>
+                                <td><span class="badge badge-active">Active</span></td>
+                                <td>12</td>
+                                <td>1 day ago</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-edit" onclick="editUser(2)" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-icon btn-view" onclick="viewUser(2)" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn-icon btn-delete" onclick="deleteUser(2)" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="user-checkbox" value="3"></td>
+                                <td>#003</td>
+                                <td>
+                                    <img src="{{ url_for('static', filename='images/clipart/users-management.png') }}" alt="User" class="user-avatar">
+                                </td>
+                                <td>Mike Johnson</td>
+                                <td>mike.johnson@email.com</td>
+                                <td><span class="badge badge-user">User</span></td>
+                                <td><span class="badge badge-inactive">Inactive</span></td>
+                                <td>8</td>
+                                <td>1 week ago</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-edit" onclick="editUser(3)" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-icon btn-view" onclick="viewUser(3)" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn-icon btn-delete" onclick="deleteUser(3)" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <div class="pagination-info">
+                        Showing 1-10 of 150 users
+                    </div>
+                    <div class="pagination">
+                        <button class="btn btn-sm" disabled>Previous</button>
+                        <button class="btn btn-sm active">1</button>
+                        <button class="btn btn-sm">2</button>
+                        <button class="btn btn-sm">3</button>
+                        <button class="btn btn-sm">Next</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New User</h3>
+                <button class="modal-close" onclick="closeUserModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="userForm">
+                <div class="form-group">
+                    <label for="userName">Full Name</label>
+                    <input type="text" id="userName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email</label>
+                    <input type="email" id="userEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="userRole">Role</label>
+                    <select id="userRole" name="role" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="userStatus">Status</label>
+                    <select id="userStatus" name="status" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="userPassword">Password</label>
+                    <input type="password" id="userPassword" name="password">
+                    <small>Leave blank to keep current password</small>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeUserModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/admin-users.js') }}"></script>
+</body>
+</html>

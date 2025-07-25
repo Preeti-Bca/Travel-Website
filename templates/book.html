@@ -1,0 +1,529 @@
+{% extends "base.html" %}
+
+{% block title %}Book {{ option.transport_type|title }} - STARBLUE{% endblock %}
+
+{% block content %}
+<div class="booking-page">
+    <!-- Booking Header -->
+    <section class="booking-header py-4 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="mb-2">Complete Your Booking</h2>
+                    <p class="text-muted mb-0">{{ option.from_location }} → {{ option.to_location }}</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="booking-steps">
+                        <span class="step completed">1. Select</span>
+                        <span class="step active">2. Book</span>
+                        <span class="step">3. Payment</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Content -->
+    <section class="booking-content py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Selected Option -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-{{ 'plane' if option.transport_type == 'flight' else 'train' if option.transport_type == 'train' else 'bus' }} me-2"></i>
+                                Selected {{ option.transport_type|title }}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="selected-option">
+                                <div class="row align-items-center">
+                                    <div class="col-md-2">
+                                        <div class="transport-icon text-center">
+                                            <img src="{{ url_for('static', filename='images/clipart/' + option.transport_type + '-icon.png') }}" 
+                                                 alt="{{ option.transport_type }}" class="img-fluid" style="max-width: 50px;">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="operator-info">
+                                            <h6 class="fw-bold mb-1">{{ option.operator_name }}</h6>
+                                            <small class="text-muted">{{ option.vehicle_number }}</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="journey-info">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="departure">
+                                                    <div class="time fw-bold">{{ option.departure_time }}</div>
+                                                    <div class="location text-muted small">{{ option.from_location }}</div>
+                                                </div>
+                                                <div class="journey-line">
+                                                    <div class="duration text-center small text-muted">
+                                                        {{ option.duration }}
+                                                    </div>
+                                                    <div class="line-container">
+                                                        <div class="journey-dot"></div>
+                                                        <div class="journey-line-bar"></div>
+                                                        <div class="journey-dot"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="arrival">
+                                                    <div class="time fw-bold">{{ option.arrival_time }}</div>
+                                                    <div class="location text-muted small">{{ option.to_location }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-2">
+                                        <div class="price-info text-center">
+                                            <div class="price fw-bold text-primary fs-5">₹{{ option.price }}</div>
+                                            <div class="per-person small text-muted">per person</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Amenities -->
+                                <div class="amenities mt-3 pt-3 border-top">
+                                    <h6 class="fw-bold mb-2">Amenities</h6>
+                                    <div class="amenity-list">
+                                        {% for amenity in option.amenities.split(',') %}
+                                        <span class="badge bg-light text-dark me-2 mb-1">
+                                            <i class="fas fa-check me-1 text-success"></i>{{ amenity.strip() }}
+                                        </span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Form -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-calendar-alt me-2"></i>Booking Details
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="bookingForm" action="{{ url_for('confirm_booking') }}" method="POST">
+                                <input type="hidden" name="option_id" value="{{ option.id }}">
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Journey Date</label>
+                                        <input type="date" class="form-control" name="departure_date" required>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">Number of Passengers</label>
+                                        <select class="form-select" name="passengers" id="passengerCount" required>
+                                            <option value="">Select passengers</option>
+                                            <option value="1">1 Passenger</option>
+                                            <option value="2">2 Passengers</option>
+                                            <option value="3">3 Passengers</option>
+                                            <option value="4">4 Passengers</option>
+                                            <option value="5">5 Passengers</option>
+                                            <option value="6">6 Passengers</option>
+                                        </select>
+                                    </div>
+                                    
+                                    {% if option.transport_type == 'flight' %}
+                                    <div class="col-md-6">
+                                        <label class="form-label">Class</label>
+                                        <select class="form-select" name="class">
+                                            <option value="economy">Economy</option>
+                                            <option value="premium-economy">Premium Economy</option>
+                                            <option value="business">Business</option>
+                                            <option value="first">First Class</option>
+                                        </select>
+                                    </div>
+                                    {% elif option.transport_type == 'train' %}
+                                    <div class="col-md-6">
+                                        <label class="form-label">Class</label>
+                                        <select class="form-select" name="class">
+                                            <option value="sleeper">Sleeper (SL)</option>
+                                            <option value="3ac">Third AC (3A)</option>
+                                            <option value="2ac">Second AC (2A)</option>
+                                            <option value="1ac">First AC (1A)</option>
+                                        </select>
+                                    </div>
+                                    {% elif option.transport_type == 'bus' %}
+                                    <div class="col-md-6">
+                                        <label class="form-label">Seat Type</label>
+                                        <select class="form-select" name="seat_type">
+                                            <option value="seater">Seater</option>
+                                            <option value="semi-sleeper">Semi Sleeper</option>
+                                            <option value="sleeper">Sleeper</option>
+                                        </select>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    {% if option.transport_type == 'flight' %}
+                                    <div class="col-md-6">
+                                        <label class="form-label">Trip Type</label>
+                                        <select class="form-select" name="trip_type" id="tripType">
+                                            <option value="one-way">One Way</option>
+                                            <option value="round-trip">Round Trip</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-6" id="returnDateField" style="display: none;">
+                                        <label class="form-label">Return Date</label>
+                                        <input type="date" class="form-control" name="return_date">
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Special Requests -->
+                                <div class="special-requests mt-4">
+                                    <h6 class="fw-bold mb-3">Special Requests (Optional)</h6>
+                                    <div class="row g-3">
+                                        {% if option.transport_type == 'flight' %}
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="mealPreference" name="meal_preference">
+                                                <label class="form-check-label" for="mealPreference">
+                                                    Special Meal Preference
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="seatPreference" name="seat_preference">
+                                                <label class="form-check-label" for="seatPreference">
+                                                    Seat Preference
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="wheelchairAssistance" name="wheelchair_assistance">
+                                                <label class="form-check-label" for="wheelchairAssistance">
+                                                    Wheelchair Assistance
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="extraBaggage" name="extra_baggage">
+                                                <label class="form-check-label" for="extraBaggage">
+                                                    Extra Baggage
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <label class="form-label">Additional Comments</label>
+                                            <textarea class="form-control" name="comments" rows="3" 
+                                                      placeholder="Any special requests or comments"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="card">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">
+                                <i class="fas fa-file-contract me-2"></i>Terms & Conditions
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="terms-content">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold">Cancellation Policy</h6>
+                                        <p class="small text-muted">{{ option.cancellation_policy }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold">Baggage Policy</h6>
+                                        <p class="small text-muted">{{ option.baggage_policy }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                                    <label class="form-check-label" for="agreeTerms">
+                                        I agree to the <a href="#" class="text-decoration-none">Terms & Conditions</a>, 
+                                        <a href="{{ url_for('change_cancellation_policy') }}" class="text-decoration-none">Cancellation Policy</a>, 
+                                        and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Booking Summary Sidebar -->
+                <div class="col-lg-4">
+                    <div class="booking-summary sticky-top" style="top: 100px;">
+                        <!-- Price Summary -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-success text-white">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-calculator me-2"></i>Price Summary
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="price-breakdown">
+                                    <div class="price-item">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Base Fare</span>
+                                            <span id="baseFare">₹{{ option.price }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="price-item">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Passengers</span>
+                                            <span id="passengerMultiplier">× 1</span>
+                                        </div>
+                                    </div>
+                                    <div class="price-item">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Subtotal</span>
+                                            <span id="subtotal">₹{{ option.price }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="price-item">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Taxes & Fees</span>
+                                            <span id="taxes">₹{{ (option.price * 0.12)|round|int }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="price-item">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Convenience Fee</span>
+                                            <span>₹50</span>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="price-total">
+                                        <div class="d-flex justify-content-between fw-bold fs-5">
+                                            <span>Total Amount</span>
+                                            <span class="text-success" id="totalAmount">₹{{ ((option.price * 1.12) + 50)|round|int }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="savings-info mt-3 p-2 bg-light rounded">
+                                    <small class="text-success">
+                                        <i class="fas fa-tag me-1"></i>
+                                        You're saving ₹200 with STARBLUE!
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Booking Actions -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn-primary btn-lg" onclick="proceedToBook()">
+                                        <i class="fas fa-arrow-right me-2"></i>Proceed to Book
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to Search
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Support -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Need Help?</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="support-options">
+                                    <div class="support-item">
+                                        <i class="fas fa-phone text-primary"></i>
+                                        <div class="ms-3">
+                                            <h6 class="mb-0">Call Support</h6>
+                                            <p class="text-muted mb-0 small">+91 1234567890</p>
+                                        </div>
+                                    </div>
+                                    <div class="support-item mt-2">
+                                        <i class="fas fa-comments text-success"></i>
+                                        <div class="ms-3">
+                                            <h6 class="mb-0">Live Chat</h6>
+                                            <p class="text-muted mb-0 small">Available 24/7</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Set minimum date to today
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    const departureDateInput = document.querySelector('input[name="departure_date"]');
+    const returnDateInput = document.querySelector('input[name="return_date"]');
+    
+    if (departureDateInput) {
+        departureDateInput.min = today;
+        departureDateInput.addEventListener('change', function() {
+            if (returnDateInput) {
+                returnDateInput.min = this.value;
+            }
+        });
+    }
+    
+    if (returnDateInput) {
+        returnDateInput.min = today;
+    }
+});
+
+// Handle trip type change
+const tripTypeSelect = document.getElementById('tripType');
+const returnDateField = document.getElementById('returnDateField');
+
+if (tripTypeSelect && returnDateField) {
+    tripTypeSelect.addEventListener('change', function() {
+        if (this.value === 'round-trip') {
+            returnDateField.style.display = 'block';
+            returnDateField.querySelector('input').required = true;
+        } else {
+            returnDateField.style.display = 'none';
+            returnDateField.querySelector('input').required = false;
+        }
+    });
+}
+
+// Update price calculation
+const passengerCountSelect = document.getElementById('passengerCount');
+const basePrice = {option,price };
+
+function updatePriceCalculation() {
+    const passengers = parseInt(passengerCountSelect.value) || 1;
+    const subtotal = basePrice * passengers;
+    const taxes = Math.round(subtotal * 0.12);
+    const convenienceFee = 50;
+    const total = subtotal + taxes + convenienceFee;
+    
+    document.getElementById('passengerMultiplier').textContent = `× ${passengers}`;
+    document.getElementById('subtotal').textContent = `₹${subtotal.toLocaleString()}`;
+    document.getElementById('taxes').textContent = `₹${taxes.toLocaleString()}`;
+    document.getElementById('totalAmount').textContent = `₹${total.toLocaleString()}`;
+}
+
+if (passengerCountSelect) {
+    passengerCountSelect.addEventListener('change', updatePriceCalculation);
+}
+
+// Proceed to booking
+function proceedToBook() {
+    const form = document.getElementById('bookingForm');
+    const agreeTerms = document.getElementById('agreeTerms');
+    
+    // Validate form
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    // Check terms agreement
+    if (!agreeTerms.checked) {
+        alert('Please agree to the terms and conditions to proceed.');
+        agreeTerms.focus();
+        return;
+    }
+    
+    // Check passenger count
+    const passengers = passengerCountSelect.value;
+    if (!passengers) {
+        alert('Please select number of passengers.');
+        passengerCountSelect.focus();
+        return;
+    }
+    
+    // Check seat availability
+    const availableSeats = {option,seats_available };
+    if (parseInt(passengers) > availableSeats) {
+        alert(`Sorry, only ${availableSeats} seats are available for this option.`);
+        return;
+    }
+    
+    // Submit form
+    form.submit();
+}
+
+// Form validation
+document.querySelectorAll('input, select, textarea').forEach(element => {
+    element.addEventListener('invalid', function() {
+        this.classList.add('is-invalid');
+    });
+    
+    element.addEventListener('input', function() {
+        if (this.checkValidity()) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        }
+    });
+});
+
+// Auto-save form data to localStorage
+function saveFormData() {
+    const formData = new FormData(document.getElementById('bookingForm'));
+    const data = {};
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    localStorage.setItem('starblue_booking_form', JSON.stringify(data));
+}
+
+// Load saved form data
+function loadFormData() {
+    const savedData = localStorage.getItem('starblue_booking_form');
+    if (savedData) {
+        try {
+            const data = JSON.parse(savedData);
+            Object.keys(data).forEach(key => {
+                const element = document.querySelector(`[name="${key}"]`);
+                if (element) {
+                    if (element.type === 'checkbox') {
+                        element.checked = data[key] === 'on';
+                    } else {
+                        element.value = data[key];
+                    }
+                }
+            });
+            updatePriceCalculation();
+        } catch (error) {
+            console.error('Error loading saved form data:', error);
+        }
+    }
+}
+
+// Save form data on input
+document.getElementById('bookingForm').addEventListener('input', saveFormData);
+
+// Load form data on page load
+document.addEventListener('DOMContentLoaded', loadFormData);
+
+// Clear saved data on successful submission
+window.addEventListener('beforeunload', function() {
+    // Only clear if form is being submitted
+    if (document.getElementById('bookingForm').checkValidity()) {
+        localStorage.removeItem('starblue_booking_form');
+    }
+});
+</script>
+{% endblock %}

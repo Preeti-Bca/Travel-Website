@@ -1,0 +1,389 @@
+{% extends "base.html" %}
+
+{% block title %}Track Your Journey - STARBLUE{% endblock %}
+
+{% block content %}
+<style>
+    .track-page {
+        background-color: skyblue;
+    }
+</style>
+<div class="track-page">
+    <!-- Track Header -->
+    <section class="track-header py-5 bg-gradient-primary text-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-5 fw-bold mb-3">Track Your Journey</h1>
+                    <p class="lead mb-4">Stay updated with real-time information about your booking</p>
+                </div>
+                <!-- <div class="col-lg-6">
+                    <div class="track-illustration">
+                        <img src="{{ url_for('static', filename='images/clipart/mobile-app.png') }}" 
+                             alt="Track Journey" class="img-fluid animate-float">
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Track Form -->
+    <section class="track-form py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body p-5">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-search-location fa-3x text-primary mb-3"></i>
+                                <h3>Enter Your Booking Details</h3>
+                                <p class="text-muted">Enter your PNR number or booking reference to track your journey</p>
+                            </div>
+                            
+                            <form action="{{ url_for('track') }}" method="POST" class="track-search-form">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">PNR Number / Booking Reference</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-ticket-alt"></i>
+                                            </span>
+                                            <input type="text" class="form-control form-control-lg" 
+                                                   name="pnr_number" placeholder="Enter PNR/Booking ID" 
+                                                   value="{{ request.form.pnr_number if request.form else '' }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Mobile Number</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-phone"></i>
+                                            </span>
+                                            <input type="tel" class="form-control form-control-lg" 
+                                                   name="mobile_number" placeholder="Enter Mobile Number" 
+                                                   value="{{ request.form.mobile_number if request.form else '' }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                                        <i class="fas fa-search me-2"></i>Track Journey
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Track Results -->
+    {% if booking_details %}
+    <section class="track-results py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Booking Information -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Booking Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="booking-info">
+                                        <h6 class="text-muted">PNR Number</h6>
+                                        <p class="fw-bold">{{ booking_details.pnr_number }}</p>
+                                        
+                                        <h6 class="text-muted">Passenger Name</h6>
+                                        <p class="fw-bold">{{ booking_details.passenger_name }}</p>
+                                        
+                                        <h6 class="text-muted">Booking Status</h6>
+                                        <span class="badge bg-{{ 'success' if booking_details.status == 'Confirmed' else 'warning' }} fs-6">
+                                            {{ booking_details.status }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="booking-info">
+                                        <h6 class="text-muted">Transport Type</h6>
+                                        <p class="fw-bold text-capitalize">{{ booking_details.transport_type }}</p>
+                                        
+                                        <h6 class="text-muted">Booking Date</h6>
+                                        <p class="fw-bold">{{ booking_details.booking_date }}</p>
+                                        
+                                        <h6 class="text-muted">Total Amount</h6>
+                                        <p class="fw-bold text-primary">₹{{ booking_details.total_amount }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Journey Details -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-route me-2"></i>Journey Details
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="journey-timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-success"></div>
+                                    <div class="timeline-content">
+                                        <h6 class="fw-bold">{{ booking_details.from_location }}</h6>
+                                        <p class="text-muted mb-1">Departure: {{ booking_details.departure_time }}</p>
+                                        <p class="text-muted">{{ booking_details.departure_date }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-connector"></div>
+                                
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-primary"></div>
+                                    <div class="timeline-content">
+                                        <h6 class="fw-bold">{{ booking_details.to_location }}</h6>
+                                        <p class="text-muted mb-1">Arrival: {{ booking_details.arrival_time }}</p>
+                                        <p class="text-muted">{{ booking_details.arrival_date }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <div class="journey-stat">
+                                        <i class="fas fa-clock text-primary"></i>
+                                        <div class="ms-3">
+                                            <h6 class="mb-0">Duration</h6>
+                                            <p class="text-muted mb-0">{{ booking_details.duration }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="journey-stat">
+                                        <i class="fas fa-users text-primary"></i>
+                                        <div class="ms-3">
+                                            <h6 class="mb-0">Passengers</h6>
+                                            <p class="text-muted mb-0">{{ booking_details.passengers }} Person(s)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="journey-stat">
+                                        <i class="fas fa-chair text-primary"></i>
+                                        <div class="ms-3">
+                                            <h6 class="mb-0">Seat Numbers</h6>
+                                            <p class="text-muted mb-0">{{ booking_details.seat_numbers }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Tracking -->
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-map-marker-alt me-2"></i>Live Tracking
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="tracking-status">
+                                <div class="status-item {{ 'active' if booking_details.current_status in ['Boarded', 'In Transit', 'Arrived'] else '' }}">
+                                    <div class="status-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="status-content">
+                                        <h6>Booking Confirmed</h6>
+                                        <p class="text-muted">Your booking has been confirmed</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="status-item {{ 'active' if booking_details.current_status in ['Boarded', 'In Transit', 'Arrived'] else '' }}">
+                                    <div class="status-icon">
+                                        <i class="fas fa-door-open"></i>
+                                    </div>
+                                    <div class="status-content">
+                                        <h6>Boarding Started</h6>
+                                        <p class="text-muted">Boarding has started at the departure point</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="status-item {{ 'active' if booking_details.current_status in ['In Transit', 'Arrived'] else '' }}">
+                                    <div class="status-icon">
+                                        <i class="fas fa-route"></i>
+                                    </div>
+                                    <div class="status-content">
+                                        <h6>In Transit</h6>
+                                        <p class="text-muted">Your journey is in progress</p>
+                                        {% if booking_details.current_location %}
+                                        <small class="text-info">Current Location: {{ booking_details.current_location }}</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="status-item {{ 'active' if booking_details.current_status == 'Arrived' else '' }}">
+                                    <div class="status-icon">
+                                        <i class="fas fa-flag-checkered"></i>
+                                    </div>
+                                    <div class="status-content">
+                                        <h6>Arrived</h6>
+                                        <p class="text-muted">Reached destination successfully</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Quick Actions -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Quick Actions</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary" onclick="downloadTicket()">
+                                    <i class="fas fa-download me-2"></i>Download Ticket
+                                </button>
+                                <button class="btn btn-outline-info" onclick="shareJourney()">
+                                    <i class="fas fa-share me-2"></i>Share Journey
+                                </button>
+                                <a href="{{ url_for('manage_booking') }}" class="btn btn-outline-warning">
+                                    <i class="fas fa-edit me-2"></i>Manage Booking
+                                </a>
+                                <button class="btn btn-outline-danger" onclick="cancelBooking()">
+                                    <i class="fas fa-times me-2"></i>Cancel Booking
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Support -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Need Help?</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="support-options">
+                                <div class="support-item">
+                                    <i class="fas fa-phone text-primary"></i>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">Call Support</h6>
+                                        <p class="text-muted mb-0">+91 1234567890</p>
+                                    </div>
+                                </div>
+                                <div class="support-item mt-3">
+                                    <i class="fas fa-comments text-success"></i>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">Live Chat</h6>
+                                        <p class="text-muted mb-0">Available 24/7</p>
+                                    </div>
+                                </div>
+                                <div class="support-item mt-3">
+                                    <i class="fas fa-envelope text-info"></i>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">Email Support</h6>
+                                        <p class="text-muted mb-0">support@starblue.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Track Tips -->
+    <section class="track-tips py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h3>Tracking Tips</h3>
+                <p class="text-muted">Make the most of our tracking feature</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="tip-card text-center">
+                        <div class="tip-icon">
+                            <i class="fas fa-mobile-alt fa-2x text-primary"></i>
+                        </div>
+                        <h5>Real-time Updates</h5>
+                        <p class="text-muted">Get instant notifications about your journey status on your mobile device.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="tip-card text-center">
+                        <div class="tip-icon">
+                            <i class="fas fa-map-marked-alt fa-2x text-success"></i>
+                        </div>
+                        <h5>Live Location</h5>
+                        <p class="text-muted">Track the exact location of your transport in real-time on the map.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="tip-card text-center">
+                        <div class="tip-icon">
+                            <i class="fas fa-bell fa-2x text-warning"></i>
+                        </div>
+                        <h5>Smart Alerts</h5>
+                        <p class="text-muted">Receive alerts for delays, gate changes, and other important updates.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function downloadTicket() {
+    // Implement ticket download functionality
+    alert('Ticket download will start shortly...');
+}
+
+function shareJourney() {
+    // Implement journey sharing functionality
+    if (navigator.share) {
+        navigator.share({
+            title: 'My Journey with STARBLUE',
+            text: 'Track my journey in real-time',
+            url: window.location.href
+        });
+    } else {
+        // Fallback for browsers that don't support Web Share API
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            alert('Journey link copied to clipboard!');
+        });
+    }
+}
+
+function cancelBooking() {
+    if (confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) {
+        // Implement booking cancellation
+        window.location.href = '/cancel-booking';
+    }
+}
+
+// Auto-refresh tracking data every 30 seconds
+setInterval(function() {
+    if (document.querySelector('.track-results')) {
+        location.reload();
+    }
+}, 30000);
+</script>
+{% endblock %}

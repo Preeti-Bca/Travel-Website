@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit FAQ - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --gray: #95a5a6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            width: 250px;
+            background: var(--secondary);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .admin-logo {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-logo h2 {
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .admin-nav ul {
+            list-style: none;
+        }
+
+        .admin-nav li a {
+            display: block;
+            padding: 12px 20px;
+            color: var(--light);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .admin-nav li a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-nav li a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-section {
+            padding: 15px 20px;
+            font-weight: bold;
+            color: var(--gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .nav-section ul {
+            margin-top: 10px;
+        }
+
+        .nav-section li a {
+            padding-left: 40px;
+            font-size: 0.9rem;
+        }
+
+        .active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--primary);
+        }
+
+        .admin-main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .admin-header h1 {
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-header h2 {
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-check-input {
+            margin-right: 10px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .alert {
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .form-text {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+
+        .faq-meta p {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .faq-meta strong {
+            color: var(--dark);
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+            .admin-sidebar {
+                width: 100%;
+            }
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .admin-actions {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <h2>STARBLUE Admin</h2>
+            </div>
+            <nav class="admin-nav">
+                <ul>
+                    <li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="{{ url_for('admin_bookings') }}"><i class="fas fa-ticket-alt"></i> Bookings</a></li>
+                    <li><a href="{{ url_for('admin_users') }}"><i class="fas fa-users"></i> Users</a></li>
+                    <li class="nav-section">
+                        <span>Transport</span>
+                        <ul>
+                            <li><a href="{{ url_for('admin_flights') }}"><i class="fas fa-plane"></i> Flights</a></li>
+                            <li><a href="{{ url_for('admin_trains') }}"><i class="fas fa-train"></i> Trains</a></li>
+                            <li><a href="{{ url_for('admin_buses') }}"><i class="fas fa-bus"></i> Buses</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-section">
+                        <span>Content</span>
+                        <ul>
+                            <li><a href="{{ url_for('admin_blog') }}"><i class="fas fa-blog"></i> Blog Posts</a></li>
+                            <li><a href="{{ url_for('admin_faq') }}" class="active"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                            <li><a href="{{ url_for('admin_pages') }}"><i class="fas fa-file-alt"></i> Pages</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{{ url_for('admin_reports') }}"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                    <li><a href="{{ url_for('admin_settings') }}"><i class="fas fa-cog"></i> Settings</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>Edit FAQ</h1>
+                <div class="admin-actions">
+                    <a href="{{ url_for('admin_faq') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to FAQ
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2>FAQ Details</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" class="faq-form">
+                            <div class="form-group">
+                                <label for="question">Question *</label>
+                                <input type="text" id="question" name="question" class="form-control" value="{{ faq.question }}" required placeholder="Enter the frequently asked question">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="answer">Answer *</label>
+                                <textarea id="answer" name="answer" class="form-control" rows="6" required placeholder="Provide a detailed answer to the question">{{ faq.answer }}</textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="category">Category *</label>
+                                    <select id="category" name="category" class="form-control" required>
+                                        <option value="">Select Category</option>
+                                        <option value="Flight Booking" {% if faq.category == 'Flight Booking' %}selected{% endif %}>Flight Booking</option>
+                                        <option value="Flight Travel" {% if faq.category == 'Flight Travel' %}selected{% endif %}>Flight Travel</option>
+                                        <option value="Train Booking" {% if faq.category == 'Train Booking' %}selected{% endif %}>Train Booking</option>
+                                        <option value="Train Travel" {% if faq.category == 'Train Travel' %}selected{% endif %}>Train Travel</option>
+                                        <option value="Bus Travel" {% if faq.category == 'Bus Travel' %}selected{% endif %}>Bus Travel</option>
+                                        <option value="Payment" {% if faq.category == 'Payment' %}selected{% endif %}>Payment</option>
+                                        <option value="Cancellation" {% if faq.category == 'Cancellation' %}selected{% endif %}>Cancellation</option>
+                                        <option value="General" {% if faq.category == 'General' %}selected{% endif %}>General</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="order">Display Order</label>
+                                    <input type="number" id="order" name="order" class="form-control" value="{{ faq.order }}" min="0" placeholder="0">
+                                    <small class="form-text">Lower numbers appear first</small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if faq.is_active %}checked{% endif %}>
+                                    <label class="form-check-label" for="is_active">
+                                        Active (visible on FAQ page)
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="faq-meta">
+                                <p><strong>Created:</strong> {{ faq.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                                <p><strong>Updated:</strong> {{ faq.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Update FAQ
+                                </button>
+                                <a href="{{ url_for('admin_faq') }}" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

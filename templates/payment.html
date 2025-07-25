@@ -1,0 +1,627 @@
+{% extends "base.html" %}
+
+{% block title %}Payment - STARBLUE{% endblock %}
+
+{% block content %}
+<div class="payment-page">
+    <!-- Payment Header -->
+    <section class="payment-header py-4 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="mb-2">Complete Your Payment</h2>
+                    <p class="text-muted mb-0">Secure payment for your {{ booking.transport_type }} booking</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="booking-steps">
+                        <span class="step completed">1. Select</span>
+                        <span class="step completed">2. Book</span>
+                        <span class="step active">3. Payment</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Content -->
+    <section class="payment-content py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Payment Methods -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-credit-card me-2"></i>Choose Payment Method
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="payment-methods">
+                                <!-- Credit/Debit Card -->
+                                <div class="payment-method">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payment_method" 
+                                               id="card_payment" value="card" checked>
+                                        <label class="form-check-label" for="card_payment">
+                                            <div class="payment-option">
+                                                <div class="payment-icon">
+                                                    <i class="fas fa-credit-card text-primary"></i>
+                                                </div>
+                                                <div class="payment-details">
+                                                    <h6 class="mb-1">Credit/Debit Card</h6>
+                                                    <small class="text-muted">Visa, Mastercard, RuPay, American Express</small>
+                                                </div>
+                                                <div class="payment-logos">
+                                                    <img src="/placeholder.svg?height=20&width=30" alt="Visa" class="me-1">
+                                                    <img src="/placeholder.svg?height=20&width=30" alt="Mastercard" class="me-1">
+                                                    <img src="/placeholder.svg?height=20&width=30" alt="RuPay">
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- UPI -->
+                                <div class="payment-method">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payment_method" 
+                                               id="upi_payment" value="upi">
+                                        <label class="form-check-label" for="upi_payment">
+                                            <div class="payment-option">
+                                                <div class="payment-icon">
+                                                    <i class="fas fa-mobile-alt text-success"></i>
+                                                </div>
+                                                <div class="payment-details">
+                                                    <h6 class="mb-1">UPI</h6>
+                                                    <small class="text-muted">Pay using UPI ID or scan QR code</small>
+                                                </div>
+                                                <div class="payment-logos">
+                                                    <img src="/placeholder.svg?height=20&width=30" alt="UPI" class="me-1">
+                                                    <img src="/placeholder.svg?height=20&width=30" alt="PhonePe" class="me-1">
+                                                    <img src="/placeholder.svg?height=20&width=30" alt="GPay">
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Net Banking -->
+                                <div class="payment-method">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payment_method" 
+                                               id="netbanking_payment" value="netbanking">
+                                        <label class="form-check-label" for="netbanking_payment">
+                                            <div class="payment-option">
+                                                <div class="payment-icon">
+                                                    <i class="fas fa-university text-info"></i>
+                                                </div>
+                                                <div class="payment-details">
+                                                    <h6 class="mb-1">Net Banking</h6>
+                                                    <small class="text-muted">Pay directly from your bank account</small>
+                                                </div>
+                                                <div class="payment-logos">
+                                                    <img src="/placeholder.svg?height=20&width=30" alt="SBI" class="me-1">
+                                                    <img src="/placeholder.svg?height=20&width=30" alt="HDFC" class="me-1">
+                                                    <img src="/placeholder.svg?height=20&width=30" alt="ICICI">
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Wallet -->
+                                <div class="payment-method">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payment_method" 
+                                               id="wallet_payment" value="wallet">
+                                        <label class="form-check-label" for="wallet_payment">
+                                            <div class="payment-option">
+                                                <div class="payment-icon">
+                                                    <i class="fas fa-wallet text-warning"></i>
+                                                </div>
+                                                <div class="payment-details">
+                                                    <h6 class="mb-1">Digital Wallet</h6>
+                                                    <small class="text-muted">Paytm, Amazon Pay, Mobikwik</small>
+                                                </div>
+                                                <div class="payment-logos">
+                                                    <img src="/placeholder.svg?height=20&width=30" alt="Paytm" class="me-1">
+                                                    <img src="/placeholder.svg?height=20&width=30" alt="Amazon Pay" class="me-1">
+                                                    <img src="/placeholder.svg?height=20&width=30" alt="Mobikwik">
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Forms -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <!-- Card Payment Form -->
+                            <div class="payment-form" id="card_form">
+                                <h6 class="fw-bold mb-3">Card Details</h6>
+                                <form id="cardPaymentForm">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label">Card Number</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-credit-card"></i>
+                                                </span>
+                                                <input type="text" class="form-control" name="card_number" 
+                                                       placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="form-label">Cardholder Name</label>
+                                            <input type="text" class="form-control" name="card_name" 
+                                                   placeholder="Name as on card" required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Expiry Date</label>
+                                            <input type="text" class="form-control" name="card_expiry" 
+                                                   placeholder="MM/YY" maxlength="5" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">CVV</label>
+                                            <input type="password" class="form-control" name="card_cvv" 
+                                                   placeholder="123" maxlength="4" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check mt-4">
+                                                <input class="form-check-input" type="checkbox" id="save_card">
+                                                <label class="form-check-label" for="save_card">
+                                                    Save card for future payments
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- UPI Payment Form -->
+                            <div class="payment-form" id="upi_form" style="display: none;">
+                                <h6 class="fw-bold mb-3">UPI Payment</h6>
+                                <form id="upiPaymentForm">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label">UPI ID</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-at"></i>
+                                                </span>
+                                                <input type="text" class="form-control" name="upi_id" 
+                                                       placeholder="yourname@paytm" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="text-center">
+                                                <p class="text-muted">OR</p>
+                                                <h6>Scan QR Code</h6>
+                                                <div class="qr-code">
+                                                    <img src="/placeholder.svg?height=150&width=150" alt="QR Code" class="img-fluid">
+                                                </div>
+                                                <small class="text-muted">Scan with any UPI app</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Net Banking Form -->
+                            <div class="payment-form" id="netbanking_form" style="display: none;">
+                                <h6 class="fw-bold mb-3">Select Your Bank</h6>
+                                <form id="netbankingPaymentForm">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label">Choose Bank</label>
+                                            <select class="form-select" name="bank" required>
+                                                <option value="">Select your bank</option>
+                                                <option value="sbi">State Bank of India</option>
+                                                <option value="hdfc">HDFC Bank</option>
+                                                <option value="icici">ICICI Bank</option>
+                                                <option value="axis">Axis Bank</option>
+                                                <option value="kotak">Kotak Mahindra Bank</option>
+                                                <option value="pnb">Punjab National Bank</option>
+                                                <option value="other">Other Banks</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Wallet Payment Form -->
+                            <div class="payment-form" id="wallet_form" style="display: none;">
+                                <h6 class="fw-bold mb-3">Select Wallet</h6>
+                                <form id="walletPaymentForm">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <div class="wallet-options">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="wallet_type" 
+                                                           id="paytm" value="paytm" required>
+                                                    <label class="form-check-label" for="paytm">
+                                                        <img src="/placeholder.svg?height=30&width=80" alt="Paytm" class="me-2">
+                                                        Paytm Wallet
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="wallet_type" 
+                                                           id="amazonpay" value="amazonpay" required>
+                                                    <label class="form-check-label" for="amazonpay">
+                                                        <img src="/placeholder.svg?height=30&width=80" alt="Amazon Pay" class="me-2">
+                                                        Amazon Pay
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="wallet_type" 
+                                                           id="mobikwik" value="mobikwik" required>
+                                                    <label class="form-check-label" for="mobikwik">
+                                                        <img src="/placeholder.svg?height=30&width=80" alt="Mobikwik" class="me-2">
+                                                        Mobikwik
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Offers & Coupons -->
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-tags me-2"></i>Offers & Coupons
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="coupon-section">
+                                <div class="row g-3">
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="couponCode" 
+                                                   placeholder="Enter coupon code">
+                                            <button class="btn btn-outline-primary" type="button" onclick="applyCoupon()">
+                                                Apply
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-success w-100" onclick="viewOffers()">
+                                            <i class="fas fa-eye me-2"></i>View Offers
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="available-offers mt-3">
+                                    <h6 class="fw-bold">Available Offers</h6>
+                                    <div class="offer-list">
+                                        <div class="offer-item">
+                                            <div class="offer-code">FIRST50</div>
+                                            <div class="offer-details">
+                                                <p class="mb-1 fw-bold">Flat ₹50 off on first booking</p>
+                                                <small class="text-muted">Valid for new users only</small>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="applyCouponCode('FIRST50')">
+                                                Apply
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="offer-item">
+                                            <div class="offer-code">SAVE200</div>
+                                            <div class="offer-details">
+                                                <p class="mb-1 fw-bold">₹200 off on bookings above ₹2000</p>
+                                                <small class="text-muted">Valid till Dec 31, 2024</small>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="applyCouponCode('SAVE200')">
+                                                Apply
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Summary Sidebar -->
+                <div class="col-lg-4">
+                    <div class="payment-summary sticky-top" style="top: 100px;">
+                        <!-- Booking Summary -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-info text-white">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-receipt me-2"></i>Booking Summary
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="booking-info">
+                                    <div class="route-info mb-3">
+                                        <h6 class="fw-bold">{{ booking.from_location }} → {{ booking.to_location }}</h6>
+                                        <small class="text-muted">{{ booking.transport_type|title }}</small>
+                                    </div>
+                                    
+                                    <div class="journey-details">
+                                        <div class="detail-row">
+                                            <span class="text-muted">Date:</span>
+                                            <span class="fw-bold">{{ booking.departure_date }}</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="text-muted">Time:</span>
+                                            <span class="fw-bold">{{ booking.departure_time }}</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="text-muted">Passengers:</span>
+                                            <span class="fw-bold">{{ booking.passengers }}</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="text-muted">PNR:</span>
+                                            <span class="fw-bold">{{ booking.pnr_number }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Price Breakdown -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-warning text-dark">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-calculator me-2"></i>Price Breakdown
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="price-breakdown">
+                                    <div class="price-item">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Base Fare ({{ booking.passengers }} × ₹{{ booking.total_amount // booking.passengers }})</span>
+                                            <span id="baseFareAmount">₹{{ booking.total_amount }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="price-item">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Taxes & Fees</span>
+                                            <span id="taxesAmount">₹{{ (booking.total_amount * 0.12)|round|int }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="price-item">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Convenience Fee</span>
+                                            <span>₹50</span>
+                                        </div>
+                                    </div>
+                                    <div class="price-item discount-item" id="discountRow" style="display: none;">
+                                        <div class="d-flex justify-content-between text-success">
+                                            <span>Discount</span>
+                                            <span id="discountAmount">-₹0</span>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="price-total">
+                                        <div class="d-flex justify-content-between fw-bold fs-5">
+                                            <span>Total Amount</span>
+                                            <span class="text-primary" id="totalAmount">₹{{ ((booking.total_amount * 1.12) + 50)|round|int }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Button -->
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn-success btn-lg" onclick="processPayment()">
+                                        <i class="fas fa-lock me-2"></i>Pay Securely
+                                    </button>
+                                    <small class="text-center text-muted">
+                                        <i class="fas fa-shield-alt me-1"></i>
+                                        Your payment is secured with 256-bit SSL encryption
+                                    </small>
+                                </div>
+                                
+                                <div class="payment-security mt-3">
+                                    <div class="security-badges text-center">
+                                        <img src="/placeholder.svg?height=30&width=60" alt="SSL Secured" class="me-2">
+                                        <img src="/placeholder.svg?height=30&width=60" alt="PCI Compliant" class="me-2">
+                                        <img src="/placeholder.svg?height=30&width=60" alt="Verified by Visa">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Payment method switching
+document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        // Hide all payment forms
+        document.querySelectorAll('.payment-form').forEach(form => {
+            form.style.display = 'none';
+        });
+        
+        // Show selected payment form
+        const selectedForm = document.getElementById(this.value + '_form');
+        if (selectedForm) {
+            selectedForm.style.display = 'block';
+        }
+    });
+});
+
+// Card number formatting
+document.querySelector('input[name="card_number"]').addEventListener('input', function() {
+    let value = this.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+    this.value = formattedValue;
+});
+
+// Expiry date formatting
+document.querySelector('input[name="card_expiry"]').addEventListener('input', function() {
+    let value = this.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+    }
+    this.value = value;
+});
+
+// CVV validation
+document.querySelector('input[name="card_cvv"]').addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
+});
+
+// Coupon functions
+function applyCoupon() {
+    const couponCode = document.getElementById('couponCode').value.trim().toUpperCase();
+    if (!couponCode) {
+        alert('Please enter a coupon code');
+        return;
+    }
+    
+    applyCouponCode(couponCode);
+}
+
+function applyCouponCode(code) {
+    // Simulate coupon validation
+    const coupons = {
+        'FIRST50': { discount: 50, minAmount: 0, description: 'Flat ₹50 off' },
+        'SAVE200': { discount: 200, minAmount: 2000, description: '₹200 off on bookings above ₹2000' }
+    };
+    
+    const currentTotal = parseInt(document.getElementById('totalAmount').textContent.replace('₹', '').replace(',', ''));
+    
+    if (coupons[code]) {
+        const coupon = coupons[code];
+        if (currentTotal >= coupon.minAmount) {
+            // Apply discount
+            const discountAmount = coupon.discount;
+            const newTotal = currentTotal - discountAmount;
+            
+            // Update UI
+            document.getElementById('discountRow').style.display = 'block';
+            document.getElementById('discountAmount').textContent = `-₹${discountAmount}`;
+            document.getElementById('totalAmount').textContent = `₹${newTotal.toLocaleString()}`;
+            document.getElementById('couponCode').value = code;
+            
+            alert(`Coupon applied successfully! You saved ₹${discountAmount}`);
+        } else {
+            alert(`This coupon requires a minimum booking amount of ₹${coupon.minAmount}`);
+        }
+    } else {
+        alert('Invalid coupon code');
+    }
+}
+
+function viewOffers() {
+    alert('Viewing all available offers...');
+}
+
+// Payment processing
+function processPayment() {
+    const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+    
+    // Validate payment form
+    const activeForm = document.getElementById(selectedPaymentMethod + '_form');
+    const formInputs = activeForm.querySelectorAll('input[required], select[required]');
+    let isValid = true;
+    
+    formInputs.forEach(input => {
+        if (!input.value.trim()) {
+            isValid = false;
+            input.classList.add('is-invalid');
+        } else {
+            input.classList.remove('is-invalid');
+        }
+    });
+    
+    if (!isValid) {
+        alert('Please fill in all required payment details');
+        return;
+    }
+    
+    // Show payment processing
+    const payButton = document.querySelector('.btn-success');
+    payButton.disabled = true;
+    payButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+    
+    // Simulate payment processing
+    setTimeout(() => {
+        // Redirect to success page
+        window.location.href = '{{ url_for("payment_success", booking_id=booking.id) }}';
+    }, 3000);
+}
+
+// Form validation
+document.querySelectorAll('input, select').forEach(element => {
+    element.addEventListener('blur', function() {
+        if (this.hasAttribute('required') && !this.value.trim()) {
+            this.classList.add('is-invalid');
+        } else {
+            this.classList.remove('is-invalid');
+        }
+    });
+});
+
+// Auto-save payment preferences
+function savePaymentPreferences() {
+    const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+    localStorage.setItem('starblue_preferred_payment', selectedMethod);
+}
+
+// Load saved payment preferences
+function loadPaymentPreferences() {
+    const savedMethod = localStorage.getItem('starblue_preferred_payment');
+    if (savedMethod) {
+        const methodRadio = document.getElementById(savedMethod + '_payment');
+        if (methodRadio) {
+            methodRadio.checked = true;
+            methodRadio.dispatchEvent(new Event('change'));
+        }
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    loadPaymentPreferences();
+    
+    // Save preferences on change
+    document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+        radio.addEventListener('change', savePaymentPreferences);
+    });
+});
+
+// Security features
+function detectCardType(number) {
+    const patterns = {
+        visa: /^4/,
+        mastercard: /^5[1-5]/,
+        amex: /^3[47]/,
+        discover: /^6(?:011|5)/
+    };
+    
+    for (let type in patterns) {
+        if (patterns[type].test(number)) {
+            return type;
+        }
+    }
+    return 'unknown';
+}
+
+// Real-time card validation
+document.querySelector('input[name="card_number"]').addEventListener('input', function() {
+    const cardType = detectCardType(this.value.replace(/\s/g, ''));
+    // Update card type indicator (implementation depends on UI design)
+    console.log('Card type detected:', cardType);
+});
+</script>
+{% endblock %}

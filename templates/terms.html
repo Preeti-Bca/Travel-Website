@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block title %}Terms & Conditions - STARBLUE{% endblock %}
+
+{% block extra_css %}
+<style>
+    .terms-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white;
+        padding: 4rem 0;
+    }
+    
+    .terms-content {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        padding: 3rem;
+        margin: 2rem 0;
+    }
+    
+    .terms-nav {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        position: sticky;
+        top: 100px;
+    }
+    
+    .terms-nav a {
+        display: block;
+        padding: 0.5rem 1rem;
+        color: #666;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .terms-nav a:hover,
+    .terms-nav a.active {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .terms-section {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .terms-section:last-child {
+        border-bottom: none;
+    }
+    
+    .terms-section h3 {
+        color: var(--primary-dark);
+        margin-bottom: 1.5rem;
+    }
+    
+    .terms-section h4 {
+        color: var(--primary-color);
+        margin: 1.5rem 0 1rem;
+    }
+    
+    .highlight-box {
+        background: rgba(135, 206, 235, 0.1);
+        border-left: 4px solid var(--primary-color);
+        padding: 1rem 1.5rem;
+        margin: 1.5rem 0;
+        border-radius: 0 10px 10px 0;
+    }
+    
+    .last-updated {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="terms-page">
+    <!-- Header -->
+    <section class="terms-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-3">Terms & Conditions</h1>
+                    <p class="lead mb-0">Please read these terms carefully before using our services</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <i class="fas fa-file-contract fa-5x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terms Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="terms-nav">
+                        <h6 class="fw-bold mb-3">Quick Navigation</h6>
+                        <a href="#acceptance" class="active">Acceptance of Terms</a>
+                        <a href="#services">Our Services</a>
+                        <a href="#booking">Booking Terms</a>
+                        <a href="#payment">Payment Terms</a>
+                        <a href="#cancellation">Cancellation Policy</a>
+                        <a href="#liability">Liability</a>
+                        <a href="#privacy">Privacy</a>
+                        <a href="#modifications">Modifications</a>
+                        <a href="#contact">Contact Information</a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-9">
+                    <div class="terms-content">
+                        <div class="last-updated">
+                            <strong>Last Updated:</strong> December 1, 2024
+                        </div>
+                        
+                        <div class="terms-section" id="acceptance">
+                            <h3><i class="fas fa-handshake me-2"></i>1. Acceptance of Terms</h3>
+                            <p>By accessing and using the STARBLUE website and services, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
+                            
+                            <div class="highlight-box">
+                                <strong>Important:</strong> These terms constitute a legally binding agreement between you and STARBLUE. Please read them carefully.
+                            </div>
+                            
+                            <h4>1.1 Eligibility</h4>
+                            <p>You must be at least 18 years old to use our services. By using our services, you represent and warrant that you meet this age requirement.</p>
+                            
+                            <h4>1.2 Account Registration</h4>
+                            <p>To access certain features of our service, you may be required to register for an account. You agree to provide accurate, current, and complete information during the registration process.</p>
+                        </div>
+                        
+                        <div class="terms-section" id="services">
+                            <h3><i class="fas fa-cogs me-2"></i>2. Our Services</h3>
+                            <p>STARBLUE provides an online platform for booking travel services including flights, trains, and buses. We act as an intermediary between you and the service providers.</p>
+                            
+                            <h4>2.1 Service Availability</h4>
+                            <ul>
+                                <li>Flight booking services</li>
+                                <li>Train reservation services</li>
+                                <li>Bus booking services</li>
+                                <li>Travel insurance (where available)</li>
+                                <li>Customer support services</li>
+                            </ul>
+                            
+                            <h4>2.2 Service Limitations</h4>
+                            <p>We reserve the right to modify, suspend, or discontinue any part of our services at any time without prior notice. We are not liable for any modification, suspension, or discontinuance of our services.</p>
+                        </div>
+                        
+                        <div class="terms-section" id="booking">
+                            <h3><i class="fas fa-ticket-alt me-2"></i>3. Booking Terms</h3>
+                            <p>When you make a booking through our platform, you enter into a contract with the respective service provider (airline, railway, or bus operator).</p>
+                            
+                            <h4>3.1 Booking Confirmation</h4>
+                            <p>A booking is confirmed only when you receive a confirmation email with your ticket details. Until then, the booking is considered pending.</p>
+                            
+                            <h4>3.2 Passenger Information</h4>
+                            <p>You must provide accurate passenger information as required by the service provider. Any discrepancies may result in denied boarding or additional charges.</p>
+                            
+                            <div class="highlight-box">
+                                <strong>Note:</strong> Ensure all passenger names match exactly with government-issued ID documents.
+                            </div>
+                            
+                            <h4>3.3 Special Requests</h4>
+                            <p>Special requests (meals, seating preferences, accessibility needs) are subject to availability and service provider policies. We cannot guarantee fulfillment of special requests.</p>
+                        </div>
+                        
+                        <div class="terms-section" id="payment">
+                            <h3><i class="fas fa-credit-card me-2"></i>4. Payment Terms</h3>
+                            <p>Payment must be made in full at the time of booking. We accept various payment methods as displayed on our website.</p>
+                            
+                            <h4>4.1 Payment Security</h4>
+                            <p>All payments are processed through secure payment gateways. We do not store your complete credit card information on our servers.</p>
+                            
+                            <h4>4.2 Currency</h4>
+                            <p>All prices are displayed in Indian Rupees (INR) unless otherwise specified. Foreign exchange rates may apply for international bookings.</p>
+                            
+                            <h4>4.3 Service Fees</h4>
+                            <p>Our service fees are clearly displayed before payment. These fees are non-refundable even if you cancel your booking.</p>
+                            
+                            <h4>4.4 Failed Payments</h4>
+                            <p>If your payment fails, your booking will not be confirmed. You may retry the payment or choose an alternative payment method.</p>
+                        </div>
+                        
+                        <div class="terms-section" id="cancellation">
+                            <h3><i class="fas fa-times-circle me-2"></i>5. Cancellation Policy</h3>
+                            <p>Cancellation terms vary by service provider and fare type. Please review the specific cancellation policy for your booking before confirming.</p>
+                            
+                            <h4>5.1 Cancellation Charges</h4>
+                            <p>Cancellation charges are determined by the service provider and may vary based on:</p>
+                            <ul>
+                                <li>Time of cancellation before departure</li>
+                                <li>Fare type and booking class</li>
+                                <li>Service provider policies</li>
+                                <li>Seasonal variations</li>
+                            </ul>
+                            
+                            <h4>5.2 Refund Processing</h4>
+                            <p>Refunds will be processed within 7-14 business days after deducting applicable cancellation charges. Refunds will be credited to the original payment method.</p>
+                            
+                            <div class="highlight-box">
+                                <strong>Important:</strong> Our service fees are non-refundable in case of cancellations.
+                            </div>
+                        </div>
+                        
+                        <div class="terms-section" id="liability">
+                            <h3><i class="fas fa-shield-alt me-2"></i>6. Liability and Disclaimers</h3>
+                            <p>STARBLUE acts as an intermediary and is not liable for the acts, errors, omissions, representations, warranties, breaches, or negligence of service providers.</p>
+                            
+                            <h4>6.1 Service Provider Responsibility</h4>
+                            <p>The service providers (airlines, railways, bus operators) are solely responsible for providing the travel services. Any issues with the actual travel service should be addressed directly with them.</p>
+                            
+                            <h4>6.2 Force Majeure</h4>
+                            <p>We are not liable for any failure to perform our obligations due to circumstances beyond our reasonable control, including but not limited to:</p>
+                            <ul>
+                                <li>Natural disasters</li>
+                                <li>Government actions</li>
+                                <li>War or terrorism</li>
+                                <li>Technical failures</li>
+                                <li>Labor strikes</li>
+                            </ul>
+                            
+                            <h4>6.3 Limitation of Liability</h4>
+                            <p>Our total liability to you for any claims arising from your use of our services shall not exceed the amount you paid for the specific booking in question.</p>
+                        </div>
+                        
+                        <div class="terms-section" id="privacy">
+                            <h3><i class="fas fa-user-shield me-2"></i>7. Privacy and Data Protection</h3>
+                            <p>Your privacy is important to us. Please review our Privacy Policy to understand how we collect, use, and protect your personal information.</p>
+                            
+                            <h4>7.1 Data Collection</h4>
+                            <p>We collect personal information necessary to provide our services, including booking and payment processing.</p>
+                            
+                            <h4>7.2 Data Sharing</h4>
+                            <p>We may share your information with service providers as necessary to complete your bookings and with third parties as outlined in our Privacy Policy.</p>
+                            
+                            <h4>7.3 Data Security</h4>
+                            <p>We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.</p>
+                        </div>
+                        
+                        <div class="terms-section" id="modifications">
+                            <h3><i class="fas fa-edit me-2"></i>8. Modifications to Terms</h3>
+                            <p>We reserve the right to modify these terms at any time. Changes will be effective immediately upon posting on our website.</p>
+                            
+                            <h4>8.1 Notification of Changes</h4>
+                            <p>We will notify users of significant changes through email or prominent notices on our website.</p>
+                            
+                            <h4>8.2 Continued Use</h4>
+                            <p>Your continued use of our services after any modifications constitutes acceptance of the new terms.</p>
+                        </div>
+                        
+                        <div class="terms-section" id="contact">
+                            <h3><i class="fas fa-envelope me-2"></i>9. Contact Information</h3>
+                            <p>If you have any questions about these Terms & Conditions, please contact us:</p>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <h5>Customer Support</h5>
+                                    <p>
+                                        <i class="fas fa-phone me-2" style="color: var(--primary-color);"></i>
+                                        +91 1234567890<br>
+                                        <i class="fas fa-envelope me-2" style="color: var(--primary-color);"></i>
+                                        support@starblue.com
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Legal Department</h5>
+                                    <p>
+                                        <i class="fas fa-envelope me-2" style="color: var(--primary-color);"></i>
+                                        legal@starblue.com<br>
+                                        <i class="fas fa-map-marker-alt me-2" style="color: var(--primary-color);"></i>
+                                        123 Travel Street, Mumbai, India
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-5 pt-4 border-top">
+                            <p class="text-muted">
+                                <strong>STARBLUE Travel Services</strong><br>
+                                These terms are governed by the laws of India. Any disputes will be subject to the jurisdiction of Mumbai courts.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Smooth scrolling for navigation links
+document.querySelectorAll('.terms-nav a').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetSection = document.querySelector(targetId);
+        
+        if (targetSection) {
+            targetSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // Update active link
+            document.querySelectorAll('.terms-nav a').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+        }
+    });
+});
+
+// Update active navigation on scroll
+window.addEventListener('scroll', function() {
+    const sections = document.querySelectorAll('.terms-section');
+    const navLinks = document.querySelectorAll('.terms-nav a');
+    
+    let current = '';
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop - 150;
+        if (window.pageYOffset >= sectionTop) {
+            current = section.getAttribute('id');
+        }
+    });
+    
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+            link.classList.add('active');
+        }
+    });
+});
+</script>
+{% endblock %}

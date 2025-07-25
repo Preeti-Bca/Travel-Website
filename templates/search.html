@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results - STARBLUE{% endblock %}
+
+{% block content %}
+<div class="search-results-page">
+    <!-- Search Header -->
+    <section class="search-header py-4 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="mb-2">Search Results</h2>
+                    <p class="text-muted mb-0">
+                        {% if results %}
+                            Found {{ results|length }} options for your journey
+                        {% else %}
+                            No results found for your search
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modifySearchModal">
+                        <i class="fas fa-edit me-2"></i>Modify Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Filters -->
+    <section class="search-filters py-3 border-bottom">
+        <div class="container">
+            <div class="row g-3">
+                <div class="col-md-2">
+                    <label class="form-label small">Sort By</label>
+                    <select class="form-select form-select-sm" id="sortBy">
+                        <option value="price">Price (Low to High)</option>
+                        <option value="duration">Duration</option>
+                        <option value="departure">Departure Time</option>
+                        <option value="rating">Rating</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small">Price Range</label>
+                    <select class="form-select form-select-sm" id="priceFilter">
+                        <option value="">All Prices</option>
+                        <option value="0-2000">₹0 - ₹2,000</option>
+                        <option value="2000-5000">₹2,000 - ₹5,000</option>
+                        <option value="5000+">₹5,000+</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small">Departure Time</label>
+                    <select class="form-select form-select-sm" id="timeFilter">
+                        <option value="">Any Time</option>
+                        <option value="morning">Morning (6AM-12PM)</option>
+                        <option value="afternoon">Afternoon (12PM-6PM)</option>
+                        <option value="evening">Evening (6PM-12AM)</option>
+                        <option value="night">Night (12AM-6AM)</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small">Duration</label>
+                    <select class="form-select form-select-sm" id="durationFilter">
+                        <option value="">Any Duration</option>
+                        <option value="0-2">0-2 hours</option>
+                        <option value="2-5">2-5 hours</option>
+                        <option value="5-10">5-10 hours</option>
+                        <option value="10+">10+ hours</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small">Stops</label>
+                    <select class="form-select form-select-sm" id="stopsFilter">
+                        <option value="">Any Stops</option>
+                        <option value="0">Non-stop</option>
+                        <option value="1">1 Stop</option>
+                        <option value="2+">2+ Stops</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-outline-secondary btn-sm w-100 mt-4" onclick="clearFilters()">
+                        <i class="fas fa-times me-1"></i>Clear Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Results -->
+    <section class="search-results py-4">
+        <div class="container">
+            {% if results %}
+                <div class="results-list">
+                    {% for result in results %}
+                    <div class="result-card mb-3" data-transport="{{ result.transport_type }}">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-1">
+                                        <div class="transport-icon">
+                                            {% if result.transport_type == 'flight' %}
+                                                <img src="{{ url_for('static', filename='images/clipart/flight-icon.png') }}" 
+                                                     alt="Flight" class="img-fluid">
+                                            {% elif result.transport_type == 'train' %}
+                                                <img src="{{ url_for('static', filename='images/clipart/train-icon.png') }}" 
+                                                     alt="Train" class="img-fluid">
+                                            {% else %}
+                                                <img src="{{ url_for('static', filename='images/clipart/bus-icon.png') }}" 
+                                                     alt="Bus" class="img-fluid">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <div class="operator-info">
+                                            <h6 class="mb-1 fw-bold">{{ result.operator_name }}</h6>
+                                            <small class="text-muted">{{ result.vehicle_number }}</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="journey-info">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="departure">
+                                                    <div class="time fw-bold">{{ result.departure_time }}</div>
+                                                    <div class="location text-muted small">{{ result.from_location }}</div>
+                                                </div>
+                                                <div class="journey-line">
+                                                    <div class="duration text-center small text-muted">
+                                                        {{ result.duration }}
+                                                    </div>
+                                                    <div class="line-container">
+                                                        <div class="journey-dot"></div>
+                                                        <div class="journey-line-bar"></div>
+                                                        <div class="journey-dot"></div>
+                                                    </div>
+                                                    {% if result.stops > 0 %}
+                                                    <div class="stops text-center small text-muted">
+                                                        {{ result.stops }} stop{{ 's' if result.stops > 1 else '' }}
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="arrival">
+                                                    <div class="time fw-bold">{{ result.arrival_time }}</div>
+                                                    <div class="location text-muted small">{{ result.to_location }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-2">
+                                        <div class="price-info text-center">
+                                            <div class="price fw-bold text-primary fs-5">₹{{ result.price }}</div>
+                                            <div class="per-person small text-muted">per person</div>
+                                            {% if result.seats_available %}
+                                            <div class="availability small text-success">
+                                                {{ result.seats_available }} seats left
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-2">
+                                        <div class="action-buttons">
+                                            <button class="btn btn-primary btn-sm w-100 mb-2" 
+                                                    onclick="bookNow('{{ result.id }}')">
+                                                <i class="fas fa-ticket-alt me-1"></i>Book Now
+                                            </button>
+                                            <button class="btn btn-outline-secondary btn-sm w-100" 
+                                                    onclick="viewDetails('{{ result.id }}')">
+                                                <i class="fas fa-info-circle me-1"></i>Details
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Additional Info (Hidden by default) -->
+                                <div class="additional-info mt-3 pt-3 border-top" id="details-{{ result.id }}" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Amenities</h6>
+                                            <div class="amenities">
+                                                {% for amenity in result.amenities %}
+                                                <span class="badge bg-light text-dark me-1 mb-1">
+                                                    <i class="fas fa-check me-1"></i>{{ amenity }}
+                                                </span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Policies</h6>
+                                            <ul class="list-unstyled small">
+                                                <li><i class="fas fa-times text-danger me-2"></i>Cancellation: {{ result.cancellation_policy }}</li>
+                                                <li><i class="fas fa-luggage-cart text-info me-2"></i>Baggage: {{ result.baggage_policy }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Pagination -->
+                <nav aria-label="Search results pagination" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">3</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            {% else %}
+                <!-- No Results -->
+                <div class="no-results text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-search fa-4x text-muted"></i>
+                    </div>
+                    <h4>No results found</h4>
+                    <p class="text-muted">Try adjusting your search criteria or check back later for new options.</p>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modifySearchModal">
+                        <i class="fas fa-edit me-2"></i>Modify Search
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</div>
+
+<!-- Modify Search Modal -->
+<div class="modal fade" id="modifySearchModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modify Search</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('search') }}" method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">From</label>
+                            <input type="text" class="form-control" name="from_location" 
+                                   value="{{ request.form.from_location if request.form else '' }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">To</label>
+                            <input type="text" class="form-control" name="to_location" 
+                                   value="{{ request.form.to_location if request.form else '' }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Transport Type</label>
+                            <select class="form-select" name="transport_type" required>
+                                <option value="flight" {{ 'selected' if request.form.transport_type == 'flight' else '' }}>Flight</option>
+                                <option value="train" {{ 'selected' if request.form.transport_type == 'train' else '' }}>Train</option>
+                                <option value="bus" {{ 'selected' if request.form.transport_type == 'bus' else '' }}>Bus</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Departure Date</label>
+                            <input type="date" class="form-control" name="departure_date" 
+                                   value="{{ request.form.departure_date if request.form else '' }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Passengers</label>
+                            <select class="form-select" name="passengers">
+                                <option value="1" {{ 'selected' if request.form.passengers == '1' else '' }}>1 Passenger</option>
+                                <option value="2" {{ 'selected' if request.form.passengers == '2' else '' }}>2 Passengers</option>
+                                <option value="3" {{ 'selected' if request.form.passengers == '3' else '' }}>3 Passengers</option>
+                                <option value="4" {{ 'selected' if request.form.passengers == '4' else '' }}>4+ Passengers</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="text-end mt-3">
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i>Search Again
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function viewDetails(resultId) {
+    const detailsDiv = document.getElementById('details-' + resultId);
+    if (detailsDiv.style.display === 'none') {
+        detailsDiv.style.display = 'block';
+    } else {
+        detailsDiv.style.display = 'none';
+    }
+}
+
+function bookNow(resultId) {
+    window.location.href = '/book/' + resultId;
+}
+
+function clearFilters() {
+    document.getElementById('sortBy').value = 'price';
+    document.getElementById('priceFilter').value = '';
+    document.getElementById('timeFilter').value = '';
+    document.getElementById('durationFilter').value = '';
+    document.getElementById('stopsFilter').value = '';
+    // Apply filters
+    applyFilters();
+}
+
+function applyFilters() {
+    const sortBy = document.getElementById('sortBy').value;
+    const priceFilter = document.getElementById('priceFilter').value;
+    const timeFilter = document.getElementById('timeFilter').value;
+    const durationFilter = document.getElementById('durationFilter').value;
+    const stopsFilter = document.getElementById('stopsFilter').value;
+    
+    const resultCards = document.querySelectorAll('.result-card');
+    
+    resultCards.forEach(card => {
+        let showCard = true;
+        
+        // Apply price filter
+        if (priceFilter) {
+            const priceElement = card.querySelector('.price');
+            const price = parseInt(priceElement.textContent.replace('₹', '').replace(',', ''));
+            
+            if (priceFilter === '0-2000' && price > 2000) showCard = false;
+            if (priceFilter === '2000-5000' && (price < 2000 || price > 5000)) showCard = false;
+            if (priceFilter === '5000+' && price < 5000) showCard = false;
+        }
+        
+        // Show/hide card
+        card.style.display = showCard ? 'block' : 'none';
+    });
+}
+
+// Apply filters on change
+document.addEventListener('DOMContentLoaded', function() {
+    const filterElements = ['sortBy', 'priceFilter', 'timeFilter', 'durationFilter', 'stopsFilter'];
+    filterElements.forEach(id => {
+        document.getElementById(id).addEventListener('change', applyFilters);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings - PURA ALL CONTROL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="admin-sidebar">
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='images/clipart/admin-dashboard.png') }}" alt="Admin" class="sidebar-logo">
+                <h2>PURA CONTROL</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_bookings') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/booking-management.png') }}" alt="Bookings" class="menu-icon">
+                        <span>Bookings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_users') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/users-management.png') }}" alt="Users" class="menu-icon">
+                        <span>Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_flights') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/flight-admin.png') }}" alt="Flights" class="menu-icon">
+                        <span>Flights</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_trains') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/train-admin.png') }}" alt="Trains" class="menu-icon">
+                        <span>Trains</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_buses') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/bus-admin.png') }}" alt="Buses" class="menu-icon">
+                        <span>Buses</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_reports') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/reports-analytics.png') }}" alt="Reports" class="menu-icon">
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="{{ url_for('admin_settings') }}">
+                        <img src="{{ url_for('static', filename='images/clipart/settings-config.png') }}" alt="Settings" class="menu-icon">
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>System Settings</h1>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-success" onclick="saveAllSettings()">
+                        <i class="fas fa-save"></i>
+                        Save All Changes
+                    </button>
+                    <div class="admin-profile">
+                        <img src="{{ url_for('static', filename='images/clipart/admin-dashboard.png') }}" alt="Admin" class="profile-img">
+                        <span>Super Admin</span>
+                        <a href="{{ url_for('logout') }}" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="settings-content">
+                <!-- Settings Navigation -->
+                <div class="settings-nav">
+                    <button class="settings-tab active" onclick="showSettingsTab('general')">
+                        <i class="fas fa-cog"></i>
+                        General
+                    </button>
+                    <button class="settings-tab" onclick="showSettingsTab('booking')">
+                        <i class="fas fa-ticket-alt"></i>
+                        Booking
+                    </button>
+                    <button class="settings-tab" onclick="showSettingsTab('payment')">
+                        <i class="fas fa-credit-card"></i>
+                        Payment
+                    </button>
+                    <button class="settings-tab" onclick="showSettingsTab('email')">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </button>
+                    <button class="settings-tab" onclick="showSettingsTab('security')">
+                        <i class="fas fa-shield-alt"></i>
+                        Security
+                    </button>
+                    <button class="settings-tab" onclick="showSettingsTab('maintenance')">
+                        <i class="fas fa-tools"></i>
+                        Maintenance
+                    </button>
+                </div>
+
+                <!-- General Settings -->
+                <div class="settings-panel active" id="general">
+                    <div class="panel-header">
+                        <h3>General Settings</h3>
+                        <p>Configure basic system information and branding</p>
+                    </div>
+                    <form class="settings-form">
+                        <div class="form-section">
+                            <h4>Company Information</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="companyName">Company Name</label>
+                                    <input type="text" id="companyName" value="STARBLUE Travel Management">
+                                </div>
+                                <div class="form-group">
+                                    <label for="companyEmail">Company Email</label>
+                                    <input type="email" id="companyEmail" value="admin@starblue.com">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="companyPhone">Phone Number</label>
+                                    <input type="tel" id="companyPhone" value="+1-800-STARBLUE">
+                                </div>
+                                <div class="form-group">
+                                    <label for="companyAddress">Address</label>
+                                    <input type="text" id="companyAddress" value="123 Travel Street, City, Country">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4>System Configuration</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="timezone">Default Timezone</label>
+                                    <select id="timezone">
+                                        <option value="UTC">UTC</option>
+                                        <option value="Asia/Kolkata" selected>Asia/Kolkata</option>
+                                        <option value="America/New_York">America/New_York</option>
+                                        <option value="Europe/London">Europe/London</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="currency">Default Currency</label>
+                                    <select id="currency">
+                                        <option value="USD">USD ($)</option>
+                                        <option value="INR" selected>INR (₹)</option>
+                                        <option value="EUR">EUR (€)</option>
+                                        <option value="GBP">GBP (£)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="language">Default Language</label>
+                                    <select id="language">
+                                        <option value="en" selected>English</option>
+                                        <option value="hi">Hindi</option>
+                                        <option value="es">Spanish</option>
+                                        <option value="fr">French</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="dateFormat">Date Format</label>
+                                    <select id="dateFormat">
+                                        <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Booking Settings -->
+                <div class="settings-panel" id="booking">
+                    <div class="panel-header">
+                        <h3>Booking Configuration</h3>
+                        <p>Manage booking policies and restrictions</p>
+                    </div>
+                    <form class="settings-form">
+                        <div class="form-section">
+                            <h4>Booking Policies</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="advanceBooking">Maximum Advance Booking (Days)</label>
+                                    <input type="number" id="advanceBooking" value="365" min="1" max="730">
+                                </div>
+                                <div class="form-group">
+                                    <label for="minBookingTime">Minimum Booking Time (Hours)</label>
+                                    <input type="number" id="minBookingTime" value="2" min="1" max="48">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cancellationWindow">Free Cancellation Window (Hours)</label>
+                                    <input type="number" id="cancellationWindow" value="24" min="0" max="168">
+                                </div>
+                                <div class="form-group">
+                                    <label for="modificationFee">Modification Fee (%)</label>
+                                    <input type="number" id="modificationFee" value="5" min="0" max="50" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4>Service Fees</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="serviceFee">Service Fee (%)</label>
+                                    <input type="number" id="serviceFee" value="2.5" min="0" max="10" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="processingFee">Processing Fee (Fixed)</label>
+                                    <input type="number" id="processingFee" value="50" min="0" max="500">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="gstRate">GST Rate (%)</label>
+                                    <input type="number" id="gstRate" value="18" min="0" max="30" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="convenienceFee">Convenience Fee</label>
+                                    <input type="number" id="convenienceFee" value="25" min="0" max="200">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4>Booking Options</h4>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="allowGuestBooking" checked>
+                                    <span class="checkmark"></span>
+                                    Allow Guest Booking
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="requirePhoneVerification" checked>
+                                    <span class="checkmark"></span>
+                                    Require Phone Verification
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="enableWaitlist">
+                                    <span class="checkmark"></span>
+                                    Enable Waitlist for Full Bookings
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="autoConfirmBooking" checked>
+                                    <span class="checkmark"></span>
+                                    Auto-confirm Bookings
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Payment Settings -->
+                <div class="settings-panel" id="payment">
+                    <div class="panel-header">
+                        <h3>Payment Configuration</h3>
+                        <p>Configure payment gateways and security settings</p>
+                    </div>
+                    <form class="settings-form">
+                        <div class="form-section">
+                            <h4>Payment Gateways</h4>
+                            <div class="payment-gateway">
+                                <div class="gateway-header">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="enableRazorpay" checked>
+                                        <span class="checkmark"></span>
+                                        Razorpay
+                                    </label>
+                                    <span class="gateway-status active">Active</span>
+                                </div>
+                                <div class="gateway-config">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="razorpayKey">API Key</label>
+                                            <input type="text" id="razorpayKey" value="rzp_test_****">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="razorpaySecret">API Secret</label>
+                                            <input type="password" id="razorpaySecret" value="****">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="payment-gateway">
+                                <div class="gateway-header">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="enablePaytm">
+                                        <span class="checkmark"></span>
+                                        Paytm
+                                    </label>
+                                    <span class="gateway-status inactive">Inactive</span>
+                                </div>
+                                <div class="gateway-config">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="paytmMerchantId">Merchant ID</label>
+                                            <input type="text" id="paytmMerchantId" placeholder="Enter Merchant ID">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="paytmMerchantKey">Merchant Key</label>
+                                            <input type="password" id="paytmMerchantKey" placeholder="Enter Merchant Key">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="payment-gateway">
+                                <div class="gateway-header">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="enableStripe">
+                                        <span class="checkmark"></span>
+                                        Stripe
+                                    </label>
+                                    <span class="gateway-status inactive">Inactive</span>
+                                </div>
+                                <div class="gateway-config">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="stripePublishableKey">Publishable Key</label>
+                                            <input type="text" id="stripePublishableKey" placeholder="pk_test_...">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="stripeSecretKey">Secret Key</label>
+                                            <input type="password" id="stripeSecretKey" placeholder="sk_test_...">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4>Payment Security</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="paymentTimeout">Payment Timeout (Minutes)</label>
+                                    <input type="number" id="paymentTimeout" value="15" min="5" max="60">
+                                </div>
+                                <div class="form-group">
+                                    <label for="maxRetryAttempts">Max Retry Attempts</label>
+                                    <input type="number" id="maxRetryAttempts" value="3" min="1" max="10">
+                                </div>
+                            </div>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="enableSSL" checked>
+                                    <span class="checkmark"></span>
+                                    Force SSL for Payments
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="enable3DSecure" checked>
+                                    <span class="checkmark"></span>
+                                    Enable 3D Secure Authentication
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="logPaymentAttempts" checked>
+                                    <span class="checkmark"></span>
+                                    Log All Payment Attempts
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Email Settings -->
+                <div class="settings-panel" id="email">
+                    <div class="panel-header">
+                        <h3>Email Configuration</h3>
+                        <p>Configure SMTP settings and email templates</p>
+                    </div>
+                    <form class="settings-form">
+                        <div class="form-section">
+                            <h4>SMTP Configuration</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="smtpHost">SMTP Host</label>
+                                    <input type="text" id="smtpHost" value="smtp.gmail.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="smtpPort">SMTP Port</label>
+                                    <input type="number" id="smtpPort" value="587">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="smtpUsername">Username</label>
+                                    <input type="text" id="smtpUsername" value="noreply@starblue.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="smtpPassword">Password</label>
+                                    <input type="password" id="smtpPassword" value="****">
+                                </div>
+                            </div>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="enableTLS" checked>
+                                    <span class="checkmark"></span>
+                                    Enable TLS
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="enableSSLEmail" checked>
+                                    <span class="checkmark"></span>
+                                    Enable SSL
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4>Email Templates</h4>
+                            <div class="template-list">
+                                <div class="template-item">
+                                    <div class="template-info">
+                                        <h5>Booking Confirmation</h5>
+                                        <p>Sent when a booking is confirmed</p>
+                                    </div>
+                                    <div class="template-actions">
+                                        <button type="button" class="btn btn-secondary" onclick="editTemplate('booking_confirmation')">
+                                            <i class="fas fa-edit"></i>
+                                            Edit
+                                        </button>
+                                        <button type="button" class="btn btn-primary" onclick="testTemplate('booking_confirmation')">
+                                            <i class="fas fa-paper-plane"></i>
+                                            Test
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="template-item">
+                                    <div class="template-info">
+                                        <h5>Booking Cancellation</h5>
+                                        <p>Sent when a booking is cancelled</p>
+                                    </div>
+                                    <div class="template-actions">
+                                        <button type="button" class="btn btn-secondary" onclick="editTemplate('booking_cancellation')">
+                                            <i class="fas fa-edit"></i>
+                                            Edit
+                                        </button>
+                                        <button type="button" class="btn btn-primary" onclick="testTemplate('booking_cancellation')">
+                                            <i class="fas fa-paper-plane"></i>
+                                            Test
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="template-item">
+                                    <div class="template-info">
+                                        <h5>Welcome Email</h5>
+                                        <p>Sent to new users after registration</p>
+                                    </div>
+                                    <div class="template-actions">
+                                        <button type="button" class="btn btn-secondary" onclick="editTemplate('welcome')">
+                                            <i class="fas fa-edit"></i>
+                                            Edit
+                                        </button>
+                                        <button type="button" class="btn btn-primary" onclick="testTemplate('welcome')">
+                                            <i class="fas fa-paper-plane"></i>
+                                            Test
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="settings-panel" id="security">
+                    <div class="panel-header">
+                        <h3>Security Configuration</h3>
+                        <p>Manage authentication and security policies</p>
+                    </div>
+                    <form class="settings-form">
+                        <div class="form-section">
+                            <h4>Authentication Settings</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="sessionTimeout">Session Timeout (Minutes)</label>
+                                    <input type="number" id="sessionTimeout" value="30" min="5" max="480">
+                                </div>
+                                <div class="form-group">
+                                    <label for="maxLoginAttempts">Max Login Attempts</label>
+                                    <input type="number" id="maxLoginAttempts" value="5" min="3" max="10">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="lockoutDuration">Account Lockout Duration (Minutes)</label>
+                                    <input type="number" id="lockoutDuration" value="15" min="5" max="1440">
+                                </div>
+                                <div class="form-group">
+                                    <label for="passwordExpiry">Password Expiry (Days)</label>
+                                    <input type="number" id="passwordExpiry" value="90" min="30" max="365">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4>Password Policy</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="minPasswordLength">Minimum Password Length</label>
+                                    <input type="number" id="minPasswordLength" value="8" min="6" max="20">
+                                </div>
+                                <div class="form-group">
+                                    <label for="passwordHistory">Password History Count</label>
+                                    <input type="number" id="passwordHistory" value="5" min="1" max="10">
+                                </div>
+                            </div>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="requireUppercase" checked>
+                                    <span class="checkmark"></span>
+                                    Require Uppercase Letters
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="requireLowercase" checked>
+                                    <span class="checkmark"></span>
+                                    Require Lowercase Letters
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="requireNumbers" checked>
+                                    <span class="checkmark"></span>
+                                    Require Numbers
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="requireSpecialChars" checked>
+                                    <span class="checkmark"></span>
+                                    Require Special Characters
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4>Two-Factor Authentication</h4>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="enable2FA">
+                                    <span class="checkmark"></span>
+                                    Enable Two-Factor Authentication
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="force2FAAdmin" checked>
+                                    <span class="checkmark"></span>
+                                    Force 2FA for Admin Users
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="enableSMSOTP">
+                                    <span class="checkmark"></span>
+                                    Enable SMS OTP
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="enableEmailOTP" checked>
+                                    <span class="checkmark"></span>
+                                    Enable Email OTP
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Maintenance Settings -->
+                <div class="settings-panel" id="maintenance">
+                    <div class="panel-header">
+                        <h3>System Maintenance</h3>
+                        <p>Manage backups, logs, and system maintenance</p>
+                    </div>
+                    <div class="maintenance-tools">
+                        <div class="tool-section">
+                            <h4>Database Management</h4>
+                            <div class="tool-grid">
+                                <div class="tool-card">
+                                    <div class="tool-icon">
+                                        <i class="fas fa-database"></i>
+                                    </div>
+                                    <div class="tool-info">
+                                        <h5>Database Backup</h5>
+                                        <p>Last backup: 2 hours ago</p>
+                                        <button class="btn btn-primary" onclick="createBackup()">
+                                            <i class="fas fa-download"></i>
+                                            Create Backup
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="tool-card">
+                                    <div class="tool-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </div>
+                                    <div class="tool-info">
+                                        <h5>Restore Database</h5>
+                                        <p>Restore from backup file</p>
+                                        <button class="btn btn-warning" onclick="restoreDatabase()">
+                                            <i class="fas fa-upload"></i>
+                                            Restore
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="tool-card">
+                                    <div class="tool-icon">
+                                        <i class="fas fa-broom"></i>
+                                    </div>
+                                    <div class="tool-info">
+                                        <h5>Clean Database</h5>
+                                        <p>Remove old logs and temp data</p>
+                                        <button class="btn btn-secondary" onclick="cleanDatabase()">
+                                            <i class="fas fa-broom"></i>
+                                            Clean
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tool-section">
+                            <h4>System Logs</h4>
+                            <div class="log-controls">
+                                <div class="log-filters">
+                                    <select id="logLevel">
+                                        <option value="all">All Levels</option>
+                                        <option value="error">Error</option>
+                                        <option value="warning">Warning</option>
+                                        <option value="info">Info</option>
+                                        <option value="debug">Debug</option>
+                                    </select>
+                                    <select id="logDate">
+                                        <option value="today">Today</option>
+                                        <option value="yesterday">Yesterday</option>
+                                        <option value="week">Last Week</option>
+                                        <option value="month">Last Month</option>
+                                    </select>
+                                    <button class="btn btn-primary" onclick="viewLogs()">
+                                        <i class="fas fa-eye"></i>
+                                        View Logs
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="downloadLogs()">
+                                        <i class="fas fa-download"></i>
+                                        Download
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="log-viewer" id="logViewer">
+                                <div class="log-entry">
+                                    <span class="log-time">2024-01-15 10:30:25</span>
+                                    <span class="log-level info">INFO</span>
+                                    <span class="log-message">User login successful: admin@starblue.com</span>
+                                </div>
+                                <div class="log-entry">
+                                    <span class="log-time">2024-01-15 10:28:15</span>
+                                    <span class="log-level warning">WARNING</span>
+                                    <span class="log-message">High memory usage detected: 85%</span>
+                                </div>
+                                <div class="log-entry">
+                                    <span class="log-time">2024-01-15 10:25:10</span>
+                                    <span class="log-level error">ERROR</span>
+                                    <span class="log-message">Payment gateway timeout: Razorpay</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tool-section">
+                            <h4>Cache Management</h4>
+                            <div class="cache-stats">
+                                <div class="cache-item">
+                                    <div class="cache-info">
+                                        <h5>Application Cache</h5>
+                                        <p>Size: 245 MB | Hit Rate: 89%</p>
+                                    </div>
+                                    <button class="btn btn-warning" onclick="clearCache('app')">
+                                        <i class="fas fa-trash"></i>
+                                        Clear
+                                    </button>
+                                </div>
+                                <div class="cache-item">
+                                    <div class="cache-info">
+                                        <h5>Database Cache</h5>
+                                        <p>Size: 128 MB | Hit Rate: 92%</p>
+                                    </div>
+                                    <button class="btn btn-warning" onclick="clearCache('db')">
+                                        <i class="fas fa-trash"></i>
+                                        Clear
+                                    </button>
+                                </div>
+                                <div class="cache-item">
+                                    <div class="cache-info">
+                                        <h5>Session Cache</h5>
+                                        <p>Size: 45 MB | Active Sessions: 156</p>
+                                    </div>
+                                    <button class="btn btn-warning" onclick="clearCache('session')">
+                                        <i class="fas fa-trash"></i>
+                                        Clear
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tool-section">
+                            <h4>System Status</h4>
+                            <div class="status-grid">
+                                <div class="status-item">
+                                    <div class="status-indicator online"></div>
+                                    <div class="status-info">
+                                        <h5>Database</h5>
+                                        <p>Online</p>
+                                    </div>
+                                </div>
+                                <div class="status-item">
+                                    <div class="status-indicator online"></div>
+                                    <div class="status-info">
+                                        <h5>Payment Gateway</h5>
+                                        <p>Online</p>
+                                    </div>
+                                </div>
+                                <div class="status-item">
+                                    <div class="status-indicator warning"></div>
+                                    <div class="status-info">
+                                        <h5>Email Service</h5>
+                                        <p>Slow Response</p>
+                                    </div>
+                                </div>
+                                <div class="status-item">
+                                    <div class="status-indicator online"></div>
+                                    <div class="status-info">
+                                        <h5>File Storage</h5>
+                                        <p>Online</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/admin-settings.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Buses - Admin - STARBLUE{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-form-header">
+        <h1>Manage Buses</h1>
+        <a href="{{ url_for('add_bus') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Bus
+        </a>
+    </div>
+
+    {% if buses %}
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Bus Number</th>
+                        <th>Route</th>
+                        <th>Departure</th>
+                        <th>Arrival</th>
+                        <th>Seats</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bus in buses %}
+                        <tr>
+                            <td>{{ bus.bus_number }}</td>
+                            <td>{{ bus.route }}</td>
+                            <td>{{ bus.departure_time.strftime('%m/%d/%Y %I:%M %p') }}</td>
+                            <td>{{ bus.arrival_time.strftime('%m/%d/%Y %I:%M %p') }}</td>
+                            <td>{{ bus.available_seats }}/{{ bus.total_seats }}</td>
+                            <td>${{ "%.2f"|format(bus.price) }}</td>
+                            <td>
+                                <span class="status status-{{ bus.status.lower().replace(' ', '-') }}">
+                                    {{ bus.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-secondary">Edit</button>
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-bus"></i>
+            <h3>No buses found</h3>
+            <p>Start by adding your first bus</p>
+            <a href="{{ url_for('add_bus') }}" class="btn btn-primary">Add Bus</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

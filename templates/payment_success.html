@@ -1,0 +1,650 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Successful - STARBLUE{% endblock %}
+
+{% block content %}
+<div class="payment-success-page">
+    <!-- Success Header -->
+    <section class="success-header py-5 bg-gradient-success text-white">
+        <div class="container">
+            <div class="row align-items-center justify-content-center text-center">
+                <div class="col-lg-8">
+                    <div class="success-animation mb-4">
+                        <div class="success-checkmark">
+                            <div class="check-icon">
+                                <span class="icon-line line-tip"></span>
+                                <span class="icon-line line-long"></span>
+                                <div class="icon-circle"></div>
+                                <div class="icon-fix"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <h1 class="display-4 fw-bold mb-3">Payment Successful!</h1>
+                    <p class="lead mb-4">Your booking has been confirmed. Get ready for an amazing journey!</p>
+                    <div class="booking-reference">
+                        <h3 class="fw-bold">Booking Reference: {{ booking.pnr_number }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Details -->
+    <section class="booking-confirmation py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <!-- Booking Summary Card -->
+                    <div class="card shadow-lg border-0 mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h4 class="mb-0">
+                                        <i class="fas fa-ticket-alt me-2"></i>Booking Confirmation
+                                    </h4>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <span class="badge bg-success fs-6 px-3 py-2">CONFIRMED</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <!-- Journey Information -->
+                            <div class="journey-summary mb-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="journey-point">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="journey-dot bg-success me-3"></div>
+                                                <div>
+                                                    <h5 class="mb-0 text-success">{{ booking.from_location }}</h5>
+                                                    <small class="text-muted">Departure</small>
+                                                </div>
+                                            </div>
+                                            <div class="journey-details ms-4">
+                                                <p class="mb-1 fw-bold">{{ booking.departure_date }}</p>
+                                                <p class="mb-0 text-muted">{{ booking.departure_time }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="journey-point">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="journey-dot bg-primary me-3"></div>
+                                                <div>
+                                                    <h5 class="mb-0 text-primary">{{ booking.to_location }}</h5>
+                                                    <small class="text-muted">Arrival</small>
+                                                </div>
+                                            </div>
+                                            <div class="journey-details ms-4">
+                                                <p class="mb-1 fw-bold">{{ booking.arrival_date or booking.departure_date }}</p>
+                                                <p class="mb-0 text-muted">{{ booking.arrival_time }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Transport Details -->
+                                <div class="transport-details mt-4 pt-4 border-top">
+                                    <div class="row g-4">
+                                        <div class="col-md-3">
+                                            <div class="detail-item text-center">
+                                                <i class="fas fa-{{ 'plane' if booking.transport_type == 'flight' else 'train' if booking.transport_type == 'train' else 'bus' }} fa-2x text-primary mb-2"></i>
+                                                <h6 class="fw-bold">{{ booking.transport_type|title }}</h6>
+                                                <p class="text-muted mb-0">Transport</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="detail-item text-center">
+                                                <i class="fas fa-users fa-2x text-info mb-2"></i>
+                                                <h6 class="fw-bold">{{ booking.passengers }}</h6>
+                                                <p class="text-muted mb-0">Passenger{{ 's' if booking.passengers > 1 else '' }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="detail-item text-center">
+                                                <i class="fas fa-rupee-sign fa-2x text-success mb-2"></i>
+                                                <h6 class="fw-bold">₹{{ booking.total_amount }}</h6>
+                                                <p class="text-muted mb-0">Total Paid</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="detail-item text-center">
+                                                <i class="fas fa-credit-card fa-2x text-warning mb-2"></i>
+                                                <h6 class="fw-bold">{{ booking.payment_status }}</h6>
+                                                <p class="text-muted mb-0">Payment</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <button class="btn btn-primary w-100" onclick="downloadTicket()">
+                                <i class="fas fa-download me-2"></i>Download Ticket
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-success w-100" onclick="sendToEmail()">
+                                <i class="fas fa-envelope me-2"></i>Email Ticket
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-info w-100" onclick="shareBooking()">
+                                <i class="fas fa-share me-2"></i>Share Details
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('track') }}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-map-marker-alt me-2"></i>Track Journey
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Important Information -->
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-info text-white">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-info-circle me-2"></i>Important Information
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            Carry a valid photo ID during travel
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            Reach the boarding point 30 minutes early
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            Keep your ticket handy for verification
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            Check baggage allowance limits
+                                        </li>
+                                        <li class="mb-0">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            Save our contact number: +91 1234567890
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-warning text-dark">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-shield-alt me-2"></i>Cancellation Policy
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="policy-summary">
+                                        <div class="policy-item mb-3">
+                                            <h6 class="fw-bold text-success">Free Cancellation</h6>
+                                            <p class="small text-muted mb-0">Cancel within 24 hours for full refund</p>
+                                        </div>
+                                        <div class="policy-item mb-3">
+                                            <h6 class="fw-bold text-warning">Partial Refund</h6>
+                                            <p class="small text-muted mb-0">Cancellation charges apply after 24 hours</p>
+                                        </div>
+                                        <div class="policy-item">
+                                            <a href="{{ url_for('change_cancellation_policy') }}" 
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-file-alt me-2"></i>View Full Policy
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next Steps -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-secondary text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-route me-2"></i>What's Next?
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <div class="next-step">
+                                        <div class="step-number">1</div>
+                                        <div class="step-content">
+                                            <h6 class="fw-bold">Confirmation Email</h6>
+                                            <p class="small text-muted mb-0">You'll receive a confirmation email with your e-ticket within 5 minutes.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="next-step">
+                                        <div class="step-number">2</div>
+                                        <div class="step-content">
+                                            <h6 class="fw-bold">Travel Preparation</h6>
+                                            <p class="small text-muted mb-0">Pack according to baggage policy and carry required documents.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="next-step">
+                                        <div class="step-number">3</div>
+                                        <div class="step-content">
+                                            <h6 class="fw-bold">Journey Day</h6>
+                                            <p class="small text-muted mb-0">Reach the boarding point on time and enjoy your journey!</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Continue Booking -->
+                    <div class="text-center mt-5">
+                        <h4 class="mb-3">Plan Your Next Adventure</h4>
+                        <p class="text-muted mb-4">Explore more destinations with STARBLUE</p>
+                        <div class="row g-2 justify-content-center">
+                            <div class="col-auto">
+                                <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-home me-2"></i>Back to Home
+                                </a>
+                            </div>
+                            <div class="col-auto">
+                                <a href="{{ url_for('search') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Book Another Trip
+                                </a>
+                            </div>
+                            <div class="col-auto">
+                                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.bg-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.success-checkmark {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    margin: 0 auto;
+    box-shadow: inset 0px 0px 0px #28a745;
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+}
+
+.success-checkmark .check-icon {
+    width: 56px;
+    height: 56px;
+    position: relative;
+    border-radius: 50%;
+    box-sizing: content-box;
+    border: 4px solid #28a745;
+    margin: 8px auto;
+}
+
+.success-checkmark .check-icon::before {
+    top: 3px;
+    left: -2px;
+    width: 30px;
+    transform-origin: 100% 50%;
+    border-radius: 100px 0 0 100px;
+}
+
+.success-checkmark .check-icon::after {
+    top: 0;
+    left: 30px;
+    width: 60px;
+    transform-origin: 0 50%;
+    border-radius: 0 100px 100px 0;
+    animation: rotate-circle 4.25s ease-in;
+}
+
+.success-checkmark .check-icon::before,
+.success-checkmark .check-icon::after {
+    content: '';
+    height: 100px;
+    position: absolute;
+    background: #FFFFFF;
+    transform: rotate(-45deg);
+}
+
+.success-checkmark .check-icon .icon-line {
+    height: 5px;
+    background-color: #28a745;
+    display: block;
+    border-radius: 2px;
+    position: absolute;
+    z-index: 10;
+}
+
+.success-checkmark .check-icon .icon-line.line-tip {
+    top: 46px;
+    left: 14px;
+    width: 25px;
+    transform: rotate(45deg);
+    animation: icon-line-tip 0.75s;
+}
+
+.success-checkmark .check-icon .icon-line.line-long {
+    top: 38px;
+    right: 8px;
+    width: 47px;
+    transform: rotate(-45deg);
+    animation: icon-line-long 0.75s;
+}
+
+.success-checkmark .check-icon .icon-circle {
+    top: -4px;
+    left: -4px;
+    z-index: 10;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    position: absolute;
+    box-sizing: content-box;
+    border: 4px solid rgba(40, 167, 69, .2);
+}
+
+.success-checkmark .check-icon .icon-fix {
+    top: 8px;
+    width: 5px;
+    left: 26px;
+    z-index: 1;
+    height: 85px;
+    position: absolute;
+    transform: rotate(-45deg);
+    background-color: #FFFFFF;
+}
+
+@keyframes rotate-circle {
+    0% {
+        transform: rotate(-45deg);
+    }
+    5% {
+        transform: rotate(-45deg);
+    }
+    12% {
+        transform: rotate(-405deg);
+    }
+    100% {
+        transform: rotate(-405deg);
+    }
+}
+
+@keyframes icon-line-tip {
+    0% {
+        width: 0;
+        left: 1px;
+        top: 19px;
+    }
+    54% {
+        width: 0;
+        left: 1px;
+        top: 19px;
+    }
+    70% {
+        width: 50px;
+        left: -8px;
+        top: 37px;
+    }
+    84% {
+        width: 17px;
+        left: 21px;
+        top: 48px;
+    }
+    100% {
+        width: 25px;
+        left: 14px;
+        top: 45px;
+    }
+}
+
+@keyframes icon-line-long {
+    0% {
+        width: 0;
+        right: 46px;
+        top: 54px;
+    }
+    65% {
+        width: 0;
+        right: 46px;
+        top: 54px;
+    }
+    84% {
+        width: 55px;
+        right: 0px;
+        top: 35px;
+    }
+    100% {
+        width: 47px;
+        right: 8px;
+        top: 38px;
+    }
+}
+
+@keyframes fill {
+    100% {
+        box-shadow: inset 0px 0px 0px 60px #28a745;
+    }
+}
+
+@keyframes scale {
+    0%, 100% {
+        transform: none;
+    }
+    50% {
+        transform: scale3d(1.1, 1.1, 1);
+    }
+}
+
+.journey-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.next-step {
+    display: flex;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.step-content h6 {
+    margin-bottom: 0.5rem;
+}
+
+.policy-item:not(:last-child) {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.75rem;
+}
+
+.detail-item {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: rgba(0,123,255,0.05);
+    transition: transform 0.2s ease;
+}
+
+.detail-item:hover {
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function downloadTicket() {
+    // Create a simple ticket download
+    const ticketData = {
+        pnr: '{{ booking.pnr_number }}',
+        from: '{{ booking.from_location }}',
+        to: '{{ booking.to_location }}',
+        date: '{{ booking.departure_date }}',
+        time: '{{ booking.departure_time }}',
+        passengers: '{{ booking.passengers }}',
+        amount: '{{ booking.total_amount }}'
+    };
+    
+    // In a real application, this would generate and download a PDF
+    alert('Your e-ticket will be downloaded shortly. Check your downloads folder.');
+    
+    // Simulate download
+    const element = document.createElement('a');
+    const file = new Blob([JSON.stringify(ticketData, null, 2)], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = `STARBLUE_Ticket_${ticketData.pnr}.txt`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
+function sendToEmail() {
+    // Implement email sending functionality
+    const email = prompt('Enter your email address to receive the ticket:');
+    if (email && validateEmail(email)) {
+        alert(`E-ticket will be sent to ${email} within 5 minutes.`);
+        // In real app, make API call to send email
+    } else if (email) {
+        alert('Please enter a valid email address.');
+    }
+}
+
+function shareBooking() {
+    const shareData = {
+        title: 'My STARBLUE Booking',
+        text: `I just booked my trip from {{ booking.from_location }} to {{ booking.to_location }} with STARBLUE! PNR: {{ booking.pnr_number }}`,
+        url: window.location.href
+    };
+    
+    if (navigator.share) {
+        navigator.share(shareData);
+    } else {
+        // Fallback for browsers that don't support Web Share API
+        const shareText = `${shareData.text}\n${shareData.url}`;
+        navigator.clipboard.writeText(shareText).then(() => {
+            alert('Booking details copied to clipboard!');
+        });
+    }
+}
+
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+// Auto-scroll to top on page load
+window.addEventListener('load', function() {
+    window.scrollTo(0, 0);
+});
+
+// Confetti animation (optional)
+function createConfetti() {
+    const colors = ['#f43f5e', '#10b981', '#3b82f6', '#f59e0b', '#8b5cf6'];
+    const confettiCount = 50;
+    
+    for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.style.position = 'fixed';
+        confetti.style.width = '10px';
+        confetti.style.height = '10px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-10px';
+        confetti.style.zIndex = '9999';
+        confetti.style.pointerEvents = 'none';
+        confetti.style.borderRadius = '50%';
+        
+        document.body.appendChild(confetti);
+        
+        const animation = confetti.animate([
+            { transform: 'translateY(-10px) rotate(0deg)', opacity: 1 },
+            { transform: `translateY(100vh) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+        ], {
+            duration: Math.random() * 3000 + 2000,
+            easing: 'cubic-bezier(0.5, 0, 0.5, 1)'
+        });
+        
+        animation.onfinish = () => confetti.remove();
+    }
+}
+
+// Trigger confetti on page load
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(createConfetti, 1000);
+});
+
+// Add success sound (optional)
+function playSuccessSound() {
+    // Create audio context for success sound
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+    oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+    oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+    
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.5);
+}
+
+// Play success sound on page load (user interaction required)
+document.addEventListener('click', function() {
+    try {
+        playSuccessSound();
+    } catch (error) {
+        console.log('Audio not supported');
+    }
+}, { once: true });
+</script>
+{% endblock %}
