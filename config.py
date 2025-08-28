@@ -3,7 +3,7 @@ from datetime import timedelta
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'starblue-secret-key-2024'
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    SQLALCHEMY_DATABASE_URI = "postgresql://travelhelp_db_user:dk2qAMJj6AqAdobFVsgRkYVvcLfjtxlH@dpg-d2ncumq4d50c73e7krfg-a.oregon-postgres.render.com/star"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Session configuration
