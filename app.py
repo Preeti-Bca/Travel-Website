@@ -262,7 +262,7 @@ def init_db():
         admin = User(
             username='admin',
             email='admin@starblue.com',
-            password_hash=generate_password_hash('admin123'),
+            password_hash=generate_password_hash('kuldeep123'),
             full_name='System Administrator',
             first_name='System',
             last_name='Administrator',
