@@ -4,98 +4,232 @@
 
 {% block extra_css %}
 <style>
-    .contact-header {
+  
+    /* ==========
+       Design tokens
+    ========== */
+    :root{
+        --primary-color: #0ea5e9;               /* fallback if base doesn't define */
+        --primary-dark: #2563eb;
+        --surface: #ffffff;
+        --surface-muted: #f8fafc;
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --ring: rgba(14,165,233,.25);
+        --shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
+        --radius-lg: 16px;
+        --radius-md: 12px;
+        --radius-sm: 10px;
+        --gap: clamp(12px, 2vw, 20px);
+        --pad: clamp(14px, 2.2vw, 24px);
+    }
+
+    /* Respect dark mode if user prefers */
+    @media (prefers-color-scheme: dark){
+        :root{
+            --surface:#0b1220;
+            --surface-muted:#0f172a;
+            --text:#e5e7eb;
+            --text-muted:#94a3b8;
+            --ring: rgba(14,165,233,.35);
+            --shadow: 0 12px 30px rgba(0,0,0,.35);
+        }
+        .bg-light{ background-color: var(--surface-muted)!important; }
+    }
+
+    /* Reduce motion when requested */
+    @media (prefers-reduced-motion: reduce){
+        *{ animation: none!important; transition: none!important; scroll-behavior: auto!important; }
+    }
+
+    /* ==========
+       Header
+    ========== */
+    .contact-header{
         background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-        color: skyblue;
-        padding: 4rem 0;
+        color: #e0f2fe; /* better contrast than skyblue */
+        padding: clamp(2.5rem, 5vw, 4rem) 0;
     }
-    
-    .contact-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        padding: 2rem;
-        margin-bottom: 2rem;
-        transition: transform 0.3s ease;
+    .contact-header .display-4{
+        line-height: 1.15;
+        word-break: break-word;
     }
-    
-    .contact-card:hover {
-        transform: translateY(-5px);
+    .contact-header .fa-headset{
+        opacity:.6;
+        font-size: clamp(2.5rem, 8vw, 5rem);
     }
-    
-    .contact-icon {
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1rem;
-        color: white;
-        font-size: 1.5rem;
+
+    /* ==========
+       Cards
+    ========== */
+    .contact-card{
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        padding: var(--pad);
+        margin-bottom: var(--gap);
+        transition: transform .25s ease, box-shadow .25s ease;
     }
-    
-    .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(135, 206, 235, 0.25);
+    .contact-card:hover{ transform: translateY(-4px); box-shadow: 0 16px 40px rgba(2, 6, 23, 0.12); }
+
+    .contact-icon{
+        width: clamp(52px, 8vw, 64px);
+        height: clamp(52px, 8vw, 64px);
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        color:#fff;
+        font-size: clamp(1.1rem, 3.2vw, 1.6rem);
+        margin: 0 auto .8rem;
     }
-    
-    .contact-info-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        padding: 1rem;
-        background: #f8f9fa;
+
+    /* ==========
+       Inputs
+    ========== */
+    .form-label{ font-weight: 600; color: var(--text); }
+    .form-control, .form-select, select.form-control{
+        background: var(--surface);
         border-radius: 10px;
-        transition: all 0.3s ease;
+        border: 1px solid rgba(2, 6, 23, 0.08);
+        padding: 0.8rem 0.9rem;
+        color: var(--text);
+        transition: border-color .2s, box-shadow .2s, background .2s;
+        min-height: 44px; /* touch target */
     }
-    
-    .contact-info-item:hover {
-        background: rgba(135, 206, 235, 0.1);
-        transform: translateX(5px);
+    .form-control:focus, .form-select:focus, select.form-control:focus{
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 .2rem var(--ring);
+        outline: none;
     }
-    
-    .contact-info-icon {
+    textarea.form-control{ min-height: 160px; resize: vertical; }
+
+    /* ==========
+       Contact info list
+    ========== */
+    .contact-info-item{
+        display: grid;
+        grid-template-columns: 50px 1fr;
+        align-items: center;
+        gap: .9rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: var(--surface-muted);
+        border-radius: var(--radius-md);
+        transition: background .2s, transform .2s;
+    }
+    .contact-info-item:hover{ background: color-mix(in srgb, var(--surface-muted) 80%, var(--primary-color) 20%); transform: translateX(4px); }
+
+    .contact-info-icon{
         width: 50px;
         height: 50px;
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 1rem;
-        color: white;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        color:#fff;
+        font-size: 1rem;
     }
-    
-    .faq-item {
-        background: white;
-        border-radius: 10px;
+
+    /* ==========
+       FAQ accordion
+    ========== */
+    .faq-item{
+        background: var(--surface);
+        border-radius: var(--radius-md);
         margin-bottom: 1rem;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        box-shadow: var(--shadow);
+        overflow: hidden;
     }
-    
-    .faq-header {
-        padding: 1.5rem;
+    .faq-header{
+        padding: 1.1rem 1.25rem;
         cursor: pointer;
-        border-bottom: 1px solid #eee;
-        transition: all 0.3s ease;
+        border-bottom: 1px solid rgba(2, 6, 23, 0.06);
+        transition: background .2s;
+        user-select: none;
     }
-    
-    .faq-header:hover {
-        background: rgba(135, 206, 235, 0.05);
+    .faq-header:hover{ background: color-mix(in srgb, var(--surface) 92%, var(--primary-color) 8%); }
+    .faq-header h6{ font-weight: 700; color: var(--text); }
+
+    .faq-content{
+        padding: 0 1.25rem;
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows .25s ease;
     }
-    
-    .faq-content {
-        padding: 1.5rem;
-        display: none;
+    .faq-content > *{ overflow: hidden; }
+    .faq-content.active{ grid-template-rows: 1fr; padding: 1rem 1.25rem 1.25rem; }
+
+    /* ==========
+       Utilities
+    ========== */
+    .text-muted{ color: var(--text-muted)!important; }
+
+    /* ==========
+       Buttons
+    ========== */
+    .btn{
+        border-radius: 10px;
+        font-weight: 600;
+        padding: .7rem 1.1rem;
     }
-    
-    .faq-content.active {
-        display: block;
+    .btn.btn-primary{
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        border: none;
+        box-shadow: 0 8px 20px rgba(14,165,233,.25);
+    }
+    .btn.btn-primary:hover{ filter: brightness(.98); transform: translateY(-1px); }
+    .btn-outline-primary{
+        color: var(--primary-dark);
+        border-color: var(--primary-color);
+    }
+    .btn-outline-primary:hover{ background: var(--primary-color); color:#fff; }
+    .btn-outline-success{ border-color: #22c55e; color:#16a34a; }
+    .btn-outline-success:hover{ background:#22c55e; color:#fff; }
+    .btn-outline-info{ border-color:#0ea5e9; color:#0284c7; }
+    .btn-outline-info:hover{ background:#0ea5e9; color:#fff; }
+    .btn-outline-danger{ border-color:#ef4444; color:#b91c1c; }
+    .btn-outline-danger:hover{ background:#ef4444; color:#fff; }
+
+    /* ==========
+       Layout tweaks & responsiveness
+    ========== */
+    .contact-page .container{ max-width: 1140px; }
+
+    /* Tighten gutters on small screens; stack columns cleanly */
+    @media (max-width: 991.98px){
+        .contact-header .row{ row-gap: 1rem; }
+        .contact-card{ padding: 1rem 1rem 1.1rem; }
+    }
+    /* Phone-first adjustments */
+    @media (max-width: 575.98px){
+        .btn.btn-primary,
+        .btn.btn-outline-primary,
+        .btn.btn-outline-success,
+        .btn.btn-outline-info,
+        .btn.btn-outline-danger{
+            width: 100%;
+        }
+        .contact-info-item{
+            grid-template-columns: 44px 1fr;
+            padding: .85rem;
+        }
+        .contact-info-icon{
+            width: 44px;height: 44px;font-size:.95rem;
+        }
+        .faq-header{ padding: .95rem 1rem; }
+        .faq-content{ padding: 0 1rem; }
+        .contact-icon{ margin-bottom:.6rem; }
+        .form-control, .form-select{ min-height: 46px; }
+    }
+
+    /* Wider screens: soften max-width of text for readability */
+    .contact-card p{
+        max-width: 75ch;
     }
 </style>
 {% endblock %}
+
 
 {% block content %}
 <div class="contact-page">

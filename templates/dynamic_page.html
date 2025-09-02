@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <title>{{ page.title }} - STARBLUE</title>
-    <meta name="description" content="{{ page.meta_description or 'Welcome to STARBLUE - Your trusted travel booking platform' }}">
-    <meta name="keywords" content="{{ page.meta_keywords or 'travel, booking, flights, trains, buses, STARBLUE' }}">
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+    <meta name="description" content="{{ page.meta_description or 'Welcome to STARBLUE - Your trusted travel booking platform' }}" />
+    <meta name="keywords" content="{{ page.meta_keywords or 'travel, booking, flights, trains, buses, STARBLUE' }}" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
     <style>
         :root {
             --primary-color: #0ea5e9;
@@ -18,215 +21,282 @@
             --warning-color: #f59e0b;
             --danger-color: #ef4444;
             --dark-color: #1f2937;
+            --text-color: #111827;
+            --muted-text: #6b7280;
+            --bg-soft: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e5e7eb;
+            --shadow: 0 8px 24px rgba(0,0,0,.08);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
         }
 
+        /* Fluid typography & base */
+        html { font-size: 100%; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+            color: var(--text-color);
             line-height: 1.6;
-            color: #333;
+            background: #fff;
         }
 
+        /* NAVBAR */
         .navbar {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,.12);
         }
-
         .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: white !important;
+            font-weight: 800;
+            font-size: clamp(1.1rem, 1vw + 1rem, 1.5rem);
+            color: #fff !important;
+            letter-spacing: .2px;
         }
-
         .navbar-nav .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
-            font-weight: 500;
-            padding: 0.75rem 1rem !important;
-            transition: all 0.3s ease;
+            color: rgba(255,255,255,.92) !important;
+            font-weight: 600;
+            padding: .6rem .85rem !important;
+            border-radius: .5rem;
+            transition: background .2s ease, color .2s ease;
+        }
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link:focus {
+            color: #fff !important;
+            background: rgba(255,255,255,.14);
+            outline: none;
+        }
+        .navbar-toggler {
+            border: 0;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        .navbar-toggler:focus .navbar-toggler-icon {
+            filter: drop-shadow(0 0 2px rgba(255,255,255,.8));
         }
 
-        .navbar-nav .nav-link:hover {
-            color: white !important;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-        }
-
+        /* HEADER */
         .page-header {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 60px 0;
+            color: #fff;
+            padding: clamp(2rem, 6vw, 4rem) 0;
             text-align: center;
         }
-
         .page-header h1 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+            font-size: clamp(1.5rem, 2.8vw + 1rem, 2.5rem);
+            font-weight: 800;
+            letter-spacing: .2px;
+            margin: 0 0 .5rem;
+        }
+        .page-header .lead {
+            max-width: 900px;
+            margin: 0 auto;
+            color: #e6f6ff;
         }
 
+        /* CONTENT SECTION */
         .page-content {
-            padding: 60px 0;
-            background: #f8fafc;
+            padding: clamp(1.5rem, 5vw, 3.5rem) 0;
+            background: var(--bg-soft);
         }
-
         .content-wrapper {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
+            background: var(--card-bg);
+            padding: clamp(1rem, 3.5vw, 2.5rem);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
         }
 
-        .page-content h1,
-        .page-content h2,
-        .page-content h3,
-        .page-content h4,
-        .page-content h5,
-        .page-content h6 {
+        /* Rich content defaults for CMS HTML */
+        .content-wrapper :where(h1,h2,h3,h4,h5,h6) {
             color: var(--dark-color);
-            margin-top: 2rem;
+            margin: 1.25rem 0 .75rem;
+            font-weight: 800;
+            line-height: 1.25;
+        }
+        .content-wrapper h1 { font-size: clamp(1.5rem, 2.6vw + 1rem, 2.25rem); }
+        .content-wrapper h2 { font-size: clamp(1.35rem, 2.2vw + 1rem, 2rem); }
+        .content-wrapper h3 { font-size: clamp(1.2rem, 1.8vw + 1rem, 1.75rem); }
+        .content-wrapper h4 { font-size: clamp(1.1rem, 1.4vw + 1rem, 1.5rem); }
+        .content-wrapper h5 { font-size: clamp(1rem, 1.2vw + .9rem, 1.25rem); }
+        .content-wrapper h6 { font-size: 1.05rem; }
+
+        .content-wrapper p {
             margin-bottom: 1rem;
+            font-size: clamp(1rem, .35vw + .95rem, 1.075rem);
+            color: var(--text-color);
+        }
+        .content-wrapper small, .content-wrapper .text-muted {
+            color: var(--muted-text) !important;
         }
 
-        .page-content h1 { font-size: 2.25rem; }
-        .page-content h2 { font-size: 2rem; }
-        .page-content h3 { font-size: 1.75rem; }
-        .page-content h4 { font-size: 1.5rem; }
-        .page-content h5 { font-size: 1.25rem; }
-        .page-content h6 { font-size: 1.125rem; }
+        /* Lists */
+        .content-wrapper ul, .content-wrapper ol {
+            padding-left: 1.25rem;
+            margin: .25rem 0 1rem;
+        }
+        .content-wrapper li { margin: .4rem 0; }
 
-        .page-content p {
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-            line-height: 1.7;
+        /* Links */
+        .content-wrapper a {
+            color: var(--primary-color);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(14,165,233,.25);
+            transition: color .2s ease, border-color .2s ease;
+        }
+        .content-wrapper a:hover, .content-wrapper a:focus {
+            color: var(--secondary-color);
+            border-color: rgba(37,99,235,.45);
+            outline: none;
         }
 
-        .page-content ul,
-        .page-content ol {
-            margin-bottom: 1.5rem;
-            padding-left: 2rem;
-        }
-
-        .page-content li {
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-
-        .page-content blockquote {
+        /* Blockquote */
+        .content-wrapper blockquote {
             border-left: 4px solid var(--primary-color);
-            padding-left: 1.5rem;
-            margin: 2rem 0;
+            background: #f1faff;
+            color: #374151;
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+            border-radius: 0 10px 10px 0;
             font-style: italic;
-            color: #6b7280;
-            background: #f9fafb;
-            padding: 1rem 1.5rem;
-            border-radius: 0 8px 8px 0;
         }
 
-        .page-content table {
+        /* Images & media from CMS */
+        .content-wrapper img, .content-wrapper video, .content-wrapper iframe {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius-sm);
+        }
+        /* Responsive iframes (YouTube, maps, etc.) */
+        .content-wrapper .embed {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 */
+            margin: 1rem 0;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            background: #000;
+        }
+        .content-wrapper .embed iframe {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+        }
+
+        /* Tables */
+        .content-wrapper table {
             width: 100%;
             border-collapse: collapse;
-            margin: 2rem 0;
-            background: white;
-            border-radius: 8px;
+            margin: 1.25rem 0;
+            background: #fff;
+            border-radius: var(--radius-sm);
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        }
+        .content-wrapper th, .content-wrapper td {
+            padding: .875rem 1rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        .content-wrapper th {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #fff;
+            font-weight: 700;
+        }
+        /* Mobile table scroll */
+        .content-wrapper .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: var(--radius-sm);
         }
 
-        .page-content th,
-        .page-content td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .page-content th {
-            background: var(--primary-color);
-            color: white;
-            font-weight: 600;
-        }
-
-        .page-content a {
-            color: var(--primary-color);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .page-content a:hover {
-            color: var(--secondary-color);
-            text-decoration: underline;
-        }
-
+        /* Feature cards (if used in page content) */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
+            grid-template-columns: repeat(12, 1fr);
+            gap: clamp(1rem, 2vw, 2rem);
+            margin: 1.5rem 0;
         }
-
         .feature {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            grid-column: span 12;
+            background: #fff;
+            padding: clamp(1rem, 2.2vw, 1.75rem);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
             text-align: center;
-            transition: transform 0.3s ease;
+            transition: transform .2s ease;
         }
-
-        .feature:hover {
-            transform: translateY(-5px);
-        }
-
+        .feature:hover { transform: translateY(-4px); }
         .feature h3 {
             color: var(--primary-color);
-            margin-bottom: 1rem;
-            font-size: 1.25rem;
+            margin-bottom: .5rem;
+            font-size: clamp(1.05rem, 1.1vw + .9rem, 1.25rem);
+            font-weight: 800;
+        }
+        @media (min-width: 576px) {
+            .feature { grid-column: span 6; }
+        }
+        @media (min-width: 992px) {
+            .feature { grid-column: span 4; }
         }
 
+        /* FOOTER */
         .footer {
             background: var(--dark-color);
-            color: white;
-            padding: 60px 0 30px;
+            color: #e5e7eb;
+            padding: clamp(2rem, 5vw, 3.5rem) 0 2rem;
         }
-
         .footer h5 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
+            color: #d1ecff;
+            font-weight: 800;
+            margin-bottom: .8rem;
         }
-
         .footer a {
-            color: #d1d5db;
+            color: #c7d2fe;
             text-decoration: none;
-            transition: color 0.3s ease;
         }
-
-        .footer a:hover {
-            color: var(--primary-color);
-        }
-
+        .footer a:hover { color: #e0f2fe; text-decoration: underline; }
         .footer-bottom {
             border-top: 1px solid #374151;
-            padding-top: 30px;
-            margin-top: 40px;
+            margin-top: 1.25rem;
+            padding-top: 1.25rem;
             text-align: center;
             color: #9ca3af;
         }
 
+        /* Spacing on small devices */
         @media (max-width: 768px) {
-            .page-header {
-                padding: 40px 0;
+            .page-header { padding: 2.25rem 0; }
+            .content-wrapper { padding: 1.25rem; }
+        }
+
+        /* Reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; animation: none !important; }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text-color: #e5e7eb;
+                --muted-text: #9ca3af;
+                --bg-soft: #0b1220;
+                --card-bg: #0f172a;
+                --border: #1f2a44;
+                --shadow: 0 6px 20px rgba(0,0,0,.5);
             }
-            
-            .page-header h1 {
-                font-size: 2rem;
-            }
-            
-            .content-wrapper {
-                padding: 20px;
-            }
-            
-            .page-content h1 { font-size: 1.875rem; }
-            .page-content h2 { font-size: 1.625rem; }
-            .page-content h3 { font-size: 1.375rem; }
+            body { background: #0b1220; }
+            .content-wrapper { box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+            .content-wrapper blockquote { background: #0b2030; color: #cbd5e1; }
+            .content-wrapper table { background: #0f172a; }
+            .content-wrapper th { color: #e5faff; }
+            .footer { color: #cbd5e1; }
+            .footer a { color: #86c7ff; }
+        }
+
+        /* Focus ring for accessibility */
+        :where(a, button, [role="button"], .nav-link):focus-visible {
+            outline: 3px solid rgba(14,165,233,.45);
+            outline-offset: 2px;
+            border-radius: 6px;
         }
     </style>
 </head>
@@ -237,48 +307,48 @@
             <a class="navbar-brand" href="{{ url_for('index') }}">
                 <i class="fas fa-plane me-2"></i>STARBLUE
             </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('search') }}">Search</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('track') }}">Track Booking</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('blog') }}">Blog</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('faq') }}">FAQ</a>
-                    </li>
-                    
-                    <!-- Dynamic menu pages -->
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('search') }}">Search</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('track') }}">Track Booking</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('blog') }}">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('faq') }}">FAQ</a></li>
                     {% for menu_page in menu_pages %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('dynamic_page', slug=menu_page.slug) }}">{{ menu_page.title }}</a>
                     </li>
                     {% endfor %}
-                    
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('contact') }}">Contact</a></li>
                 </ul>
-                
+
                 <ul class="navbar-nav">
                     {% if current_user %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                        <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            id="userDropdown"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
                             <i class="fas fa-user me-1"></i>{{ current_user.full_name }}
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             {% if current_user.is_admin %}
                             <li><a class="dropdown-item" href="{{ url_for('admin_dashboard') }}">Admin Panel</a></li>
                             {% endif %}
@@ -289,12 +359,8 @@
                         </ul>
                     </li>
                     {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -306,7 +372,7 @@
         <div class="container">
             <h1>{{ page.title }}</h1>
             {% if page.meta_description %}
-            <p class="lead">{{ page.meta_description }}</p>
+                <p class="lead">{{ page.meta_description }}</p>
             {% endif %}
         </div>
     </section>
@@ -315,29 +381,43 @@
     <section class="page-content">
         <div class="container">
             <div class="content-wrapper">
+                {# Wrap tables for small-screen scroll safety #}
+                <script>
+                  // Wrap any top-level tables with a scroll container at runtime (safe for CMS content)
+                  document.addEventListener('DOMContentLoaded', function () {
+                    document.querySelectorAll('.content-wrapper > table, .content-wrapper table').forEach(function(tbl){
+                      if (!tbl.closest('.table-wrap')) {
+                        const wrap = document.createElement('div');
+                        wrap.className = 'table-wrap';
+                        tbl.parentNode.insertBefore(wrap, tbl);
+                        wrap.appendChild(tbl);
+                      }
+                    });
+                  });
+                </script>
                 {{ page.content | safe }}
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer mt-auto">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-6 mb-4">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6">
                     <h5><i class="fas fa-plane me-2"></i>STARBLUE</h5>
                     <p>Your trusted travel booking platform for flights, trains, and buses across India and beyond.</p>
-                    <div class="social-links">
-                        <a href="#" class="me-3"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <div class="d-flex gap-3">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
                     </div>
                 </div>
-                
-                <div class="col-lg-2 col-md-6 mb-4">
+
+                <div class="col-lg-2 col-md-6">
                     <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
+                    <ul class="list-unstyled mb-0">
                         <li><a href="{{ url_for('index') }}">Home</a></li>
                         <li><a href="{{ url_for('search') }}">Search</a></li>
                         <li><a href="{{ url_for('track') }}">Track Booking</a></li>
@@ -345,10 +425,10 @@
                         <li><a href="{{ url_for('faq') }}">FAQ</a></li>
                     </ul>
                 </div>
-                
-                <div class="col-lg-2 col-md-6 mb-4">
+
+                <div class="col-lg-2 col-md-6">
                     <h5>Services</h5>
-                    <ul class="list-unstyled">
+                    <ul class="list-unstyled mb-0">
                         <li><a href="#">Flight Booking</a></li>
                         <li><a href="#">Train Booking</a></li>
                         <li><a href="#">Bus Booking</a></li>
@@ -356,10 +436,10 @@
                         <li><a href="#">Holiday Packages</a></li>
                     </ul>
                 </div>
-                
-                <div class="col-lg-2 col-md-6 mb-4">
+
+                <div class="col-lg-2 col-md-6">
                     <h5>Support</h5>
-                    <ul class="list-unstyled">
+                    <ul class="list-unstyled mb-0">
                         <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
                         <li><a href="{{ url_for('faq') }}">Help Center</a></li>
                         <li><a href="{{ url_for('terms') }}">Terms of Service</a></li>
@@ -367,19 +447,19 @@
                         <li><a href="{{ url_for('change_cancellation_policy') }}">Cancellation Policy</a></li>
                     </ul>
                 </div>
-                
-                <div class="col-lg-2 col-md-6 mb-4">
+
+                <div class="col-lg-2 col-md-6">
                     <h5>Contact Info</h5>
-                    <ul class="list-unstyled">
+                    <ul class="list-unstyled mb-0">
                         <li><i class="fas fa-phone me-2"></i>+91 1800 123 4567</li>
                         <li><i class="fas fa-envelope me-2"></i>support@starblue.com</li>
                         <li><i class="fas fa-map-marker-alt me-2"></i>Mumbai, India</li>
                     </ul>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
-                <p>&copy; 2024 STARBLUE. All rights reserved.</p>
+                <p class="mb-0">&copy; 2024 STARBLUE. All rights reserved.</p>
             </div>
         </div>
     </footer>

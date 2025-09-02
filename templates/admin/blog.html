@@ -120,7 +120,188 @@
             border-radius: 10px;
             padding: 1.5rem;
             margin-bottom: 2rem;
-        }
+        }:root{
+  --primary-color:#0ea5e9;
+  --secondary-color:#2563eb;
+  --success-color:#10b981;
+  --warning-color:#f59e0b;
+  --danger-color:#ef4444;
+  --dark-color:#1f2937;
+
+  /* extras for spacing/rounding/typography */
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow-sm:0 4px 6px rgba(0,0,0,.1);
+  --shadow-md:0 8px 25px rgba(0,0,0,.12);
+  --fs-base:clamp(14px,1.6vw,16px);
+  --fs-h2:clamp(1.1rem,2.4vw,1.5rem);
+  --fs-h3:clamp(1rem,2vw,1.25rem);
+}
+
+html{-webkit-text-size-adjust:100%}
+*,*:before,*:after{box-sizing:border-box}
+
+body{
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height:100vh;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size:var(--fs-base);
+}
+
+/* ===== Header ===== */
+.admin-header{
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color:#fff;
+  padding: clamp(.75rem, 2vw, 1rem) 0;
+  box-shadow: var(--shadow-sm);
+}
+.admin-header h2{
+  font-size:var(--fs-h2);
+  margin:0 0 .25rem 0;
+}
+.admin-header p{
+  margin:0;
+  opacity:.95;
+  font-size:clamp(.9rem,1.6vw,1rem);
+}
+
+/* ===== Top Nav (pills) ===== */
+.admin-nav{
+  background:#fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  margin: clamp(1rem,3vw,2rem) 0;
+  padding: clamp(.75rem,2vw,1rem);
+}
+.nav-link{
+  color:var(--dark-color);
+  font-weight:500;
+  padding: .6rem .9rem;
+  border-radius:8px;
+  transition: transform .2s ease, background .2s ease, color .2s ease;
+  margin:0 .125rem;
+  white-space:nowrap;
+}
+.nav-link:hover,.nav-link.active{
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color:#fff !important;
+  transform: translateY(-2px);
+}
+
+/* ===== Content Cards ===== */
+.content-section{
+  background:#fff;
+  border-radius: var(--radius);
+  padding: clamp(1rem,3vw,2rem);
+  box-shadow: var(--shadow-md);
+  margin-bottom: clamp(1rem,3vw,2rem);
+}
+.section-title{
+  color:var(--dark-color);
+  font-weight:700;
+  margin-bottom:1rem;
+  padding-bottom:.5rem;
+  border-bottom:3px solid var(--primary-color);
+  font-size:var(--fs-h3);
+}
+
+/* ===== Buttons ===== */
+.btn-primary{
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border:none;
+  border-radius:8px;
+  padding:.7rem 1.25rem;
+  font-weight:600;
+  transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+.btn-primary:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(14,165,233,.35);
+}
+
+/* ===== Search / Filter ===== */
+.search-filter{
+  background:#f8fafc;
+  border-radius:10px;
+  padding: clamp(1rem,2.5vw,1.5rem);
+  margin-bottom: clamp(1rem,3vw,2rem);
+}
+.search-filter .input-group-text{background:#fff}
+
+/* Stack filter controls nicely on small screens */
+@media (max-width: 767.98px){
+  .search-filter .row > [class^="col-"]{
+    margin-bottom:.75rem;
+  }
+}
+
+/* ===== Table ===== */
+.table{
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow: var(--shadow-sm);
+  background:#fff;
+}
+.table thead th{
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color:#fff;
+  border:none;
+  font-weight:600;
+  padding: clamp(.75rem,2vw,1rem);
+  white-space:nowrap;
+}
+.table tbody td{
+  padding: clamp(.65rem,2vw,1rem);
+  vertical-align:middle;
+  border-color:#e5e7eb;
+  word-break:break-word;
+}
+.table tbody td small{color:#6b7280}
+
+/* Keep action buttons wrapping instead of overflowing */
+.table tbody td form{display:inline-block}
+.btn-sm{
+  padding:.35rem .65rem;
+  font-size:.875rem;
+  border-radius:6px;
+  margin: .125rem;
+}
+
+/* Badges */
+.badge{
+  padding:.45rem .7rem;
+  border-radius:20px;
+  font-weight:600;
+  font-size:.8rem;
+}
+
+/* Pagination */
+.pagination .page-link{
+  border-radius:8px;
+}
+.pagination .page-item.active .page-link{
+  background:linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-color:transparent;
+}
+
+/* ===== Utilities for better responsiveness ===== */
+/* Slightly reduce paddings on very small screens */
+@media (max-width: 575.98px){
+  .admin-header .btn{
+    margin-top:.5rem;
+    width:100%;
+  }
+  .admin-nav .nav{flex-wrap:wrap; gap:.4rem; justify-content:flex-start}
+  .nav-link{padding:.5rem .7rem}
+  .content-section{padding:1rem}
+  .table tbody td:first-child strong{display:inline-block; max-width:100%}
+}
+
+/* Prefer reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important; animation:none !important}
+}
+
     </style>
 </head>
 <body>
